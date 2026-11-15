@@ -1,0 +1,19 @@
+{
+  "generator": "Built-in image_gen",
+  "useCase": "photorealistic-natural",
+  "delivery": "Uploaded to Supabase site-media; deal records hold the public URLs. These source assets are not hardcoded into the frontend.",
+  "images": [
+    {
+      "dealId": "airport-delivery-return",
+      "file": "assets/generated/deals/airport-pickup-return.webp",
+      "imageAlt": "AI-generated illustration of an airport rental-car handover with arriving travellers in Sri Lanka",
+      "prompt": "Use case: photorealistic-natural. Create one premium editorial photograph for Flexi Rental's Sri Lanka AIRPORT PICKUP & RETURN website deal card. Landscape 3:2 composition. Scene: a clean pearl white midsize hybrid rental sedan parked at an international airport arrivals curb in tropical Sri Lanka, airy glass terminal canopy and a few palm trees in background. A smart casually dressed Sri Lankan rental representative hands car keys to a newly arrived couple beside two realistic travel suitcases. Natural candid moment, anatomically correct hands, plausible vehicle geometry, no staged stock-photo grin. Warm soft morning daylight, balanced exposure, natural greens and silver-white highlights, sophisticated travel photography, crisp but not overprocessed. Frame car and handover in upper and middle two thirds, keep meaningful subjects centered so portrait mobile crops still work; leave lower third quiet dark neutral pavement for existing white website copy overlay. Entirely photographic, no poster design, no collage. No added text, no logos, no watermark, no legible signage or license plate, no embedded gradient or captions. This is an illustrative service photo, not an image of the actual fleet."
+    },
+    {
+      "dealId": "luxury-wedding-cars",
+      "file": "assets/generated/deals/luxury-wedding-car.webp",
+      "imageAlt": "AI-generated illustration of a white luxury wedding car and a couple outside a tropical Sri Lankan hotel",
+      "prompt": "Use case: photorealistic-natural. Create one premium editorial photograph for Flexi Rental's LUXURY WEDDING CARS website deal card in Sri Lanka. Landscape 3:2 composition. A beautiful pearl-white luxury executive sedan in front three-quarter view on an elegant tropical boutique hotel driveway, modest tasteful ivory flower arrangement and pale ribbons on the hood. Modern Sri Lankan bride in an ivory embroidered sari and groom in a dark tailored suit standing close together near the passenger side; relaxed graceful candid mood. Lush tropical garden, refined colonial-style hotel entrance softly out of focus, real stone paving, subtle ivory flowers. Keep the wedding car clearly visible and the couple in the upper-middle central area, leave breathing room around car for mobile portrait cropping, lower third comparatively quiet driveway for website copy. Natural late-afternoon soft light, balanced highlights and realistic skin tones, sophisticated wedding automotive photography with convincing car proportions and realistic hands. Moderate exposure, no HDR or blown highlights. No added words, no brand logo, no watermark, no readable license plate, no poster design, no collage, no artificial text gradient. This is an illustrative rental-service image."
+    }
+  ]
+}

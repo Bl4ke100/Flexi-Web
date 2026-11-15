@@ -4,10 +4,11 @@ import * as THREE from "three";
 import { loadTypescript } from "./load-typescript.mjs";
 
 const ribbon = loadTypescript("../src/lib/film-ribbon.ts");
-const software = loadTypescript("../src/lib/software-gallery.ts", { "./film-ribbon": ribbon });
+const layout = loadTypescript("../src/lib/gallery-layout.ts");
+const software = loadTypescript("../src/lib/software-gallery.ts", { "./film-ribbon": ribbon, "./gallery-layout": layout });
 
 test("Software projection matches the original perspective camera at wide and narrow sizes", () => {
-  for (const [width, height] of [[2560, 1024], [1274, 720], [390, 844]]) {
+  for (const [width, height] of [[2560, 1024], [1274, 720], [320, 568], [390, 844], [768, 1024], [844, 390]]) {
     const camera = new THREE.PerspectiveCamera(38, width / height, 0.1, 50);
     camera.position.set(0, 0, 11); camera.updateMatrixWorld();
     for (const point of [[-11.8, -4.1, -6.4], [5.35, -1.05, -0.4], [1.15, 0.25, 3.55], [0, -0.08, 0]]) {
@@ -19,6 +20,11 @@ test("Software projection matches the original perspective camera at wide and na
     const headline = software.galleryHeadlineBounds(width, height);
     assert.ok(Math.abs(headline.x + headline.width / 2 - width / 2) < 0.000001);
     assert.ok(Math.abs(headline.width / headline.height - 12.6 / 3.99) < 0.000001);
+    assert.ok(headline.x >= width * 0.04 - 0.000001, "The centered headline must fit inside phone gutters");
+    assert.ok(headline.x + headline.width <= width * 0.96 + 0.000001);
+    const plane = layout.galleryHeadlineSize(width, height);
+    const left = new THREE.Vector3(-plane.width / 2, -0.08 + plane.height / 2, 0).project(camera);
+    assert.ok(Math.abs(headline.x - (left.x + 1) * width / 2) < 0.000001, "Both renderers must use the same responsive headline size");
   }
 });
 

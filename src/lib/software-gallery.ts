@@ -1,4 +1,5 @@
 import { FILM_CURVE_LENGTH, FILM_SEGMENTS, FILM_STEP, FILM_WIDTH, createRibbonScratch, deformFilmRibbon } from "./film-ribbon";
+import { galleryHeadlineSize } from "./gallery-layout";
 
 export type ScreenPoint = { x: number; y: number };
 export type GalleryTriangle = { points: [ScreenPoint, ScreenPoint, ScreenPoint]; uv: [ScreenPoint, ScreenPoint, ScreenPoint]; depth: number; shade: number; photo: number; half: number };
@@ -9,8 +10,9 @@ export function projectGalleryPoint(x: number, y: number, z: number, width: numb
 }
 
 export function galleryHeadlineBounds(width: number, height: number) {
-  const topLeft = projectGalleryPoint(-6.3, -0.08 + 3.99 / 2, 0, width, height);
-  const bottomRight = projectGalleryPoint(6.3, -0.08 - 3.99 / 2, 0, width, height);
+  const headline = galleryHeadlineSize(width, height);
+  const topLeft = projectGalleryPoint(-headline.width / 2, -0.08 + headline.height / 2, 0, width, height);
+  const bottomRight = projectGalleryPoint(headline.width / 2, -0.08 - headline.height / 2, 0, width, height);
   return { x: topLeft.x, y: topLeft.y, width: bottomRight.x - topLeft.x, height: bottomRight.y - topLeft.y };
 }
 

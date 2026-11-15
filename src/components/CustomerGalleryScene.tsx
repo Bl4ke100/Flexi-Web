@@ -8,6 +8,7 @@ import type { CustomerPhoto } from "@/data/fleetData";
 import { FILM_CURVE_LENGTH, FILM_SEGMENTS, FILM_STEP, FILM_WIDTH, createRibbonScratch, deformFilmRibbon } from "@/lib/film-ribbon";
 import { canvasImage } from "@/lib/responsive-image";
 import { paintGalleryPoster, createGalleryHeadline } from "@/lib/gallery-artwork";
+import { galleryHeadlineSize } from "@/lib/gallery-layout";
 
 function useCustomerPosterTexture(photo: CustomerPhoto): THREE.CanvasTexture {
   const invalidate = useThree(state => state.invalidate);
@@ -137,6 +138,8 @@ function FilmFrameMesh({ photo, cardIndex, progress, totalCards, onSelect }: {
 // - The Front Film Tape (Z > 0) renders physically IN FRONT OF this headline!
 // ============================================================================
 function CenterHeadlinePlane() {
+  const size = useThree(state => state.size);
+  const headline = galleryHeadlineSize(size.width, size.height);
   const texture = useMemo(() => {
     const canvas = createGalleryHeadline();
     const tex = new THREE.CanvasTexture(canvas);
@@ -150,7 +153,7 @@ function CenterHeadlinePlane() {
 
   return (
     <mesh position={[0, -0.08, 0]}>
-      <planeGeometry args={[12.6, 3.99]} />
+      <planeGeometry args={[headline.width, headline.height]} />
       <meshBasicMaterial
         map={texture}
         transparent

@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { RollText, FourPointStar } from "./AnimatedText";
 import WhatsAppLink from "./WhatsAppLink";
@@ -17,6 +17,14 @@ export default function Navbar({
 }: NavbarProps) {
   const { settings } = useSiteContent();
   const [menuOpen, setMenuOpen] = useState(false);
+  useEffect(() => {
+    if (!menuOpen) return;
+    const previousOverflow = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    const closeOnEscape = (event: KeyboardEvent) => { if (event.key === "Escape") setMenuOpen(false); };
+    window.addEventListener("keydown", closeOnEscape);
+    return () => { document.body.style.overflow = previousOverflow; window.removeEventListener("keydown", closeOnEscape); };
+  }, [menuOpen]);
 
   const navLinks = [
     { label: "Home", href: "#hero" },
@@ -30,14 +38,14 @@ export default function Navbar({
   return (
     <>
       <header className="fixed top-0 left-0 right-0 z-50 pointer-events-none mix-blend-difference">
-        <div className="relative w-full px-6 md:px-10 h-20 flex items-center justify-between text-white">
+        <div className="relative w-full px-4 sm:px-6 md:px-10 h-16 sm:h-20 flex items-center justify-between gap-2 text-white">
           {/* Left Brand Mark */}
           <a
             href="#hero"
-            className="pointer-events-auto flex items-center gap-2.5 group"
+            className="pointer-events-auto flex items-center gap-2 sm:gap-2.5 group shrink-0"
           >
             <FourPointStar className="w-4 h-4 text-[#FF5500] group-hover:rotate-90 transition-transform duration-500" />
-            <span className="font-display font-extrabold text-lg tracking-tight uppercase">
+            <span className="font-display font-extrabold text-base sm:text-lg tracking-tight uppercase">
               {settings.companyName.split(" ")[0]} <span className="text-[#FF5500]">{settings.companyName.split(" ").slice(1).join(" ")}</span>
             </span>
           </a>
@@ -52,11 +60,11 @@ export default function Navbar({
           </nav>
 
           {/* Right Actions & Menu Button */}
-          <div className="flex items-center gap-6 pointer-events-auto font-mono text-xs uppercase tracking-[0.18em]">
+          <div className="flex items-center gap-2 sm:gap-6 pointer-events-auto font-mono text-xs uppercase tracking-[0.18em]">
             {compareCount > 0 && (
               <button
-                onClick={onOpenCompare}
-                className="hidden sm:inline-block text-[#FF5500]"
+                onClick={() => { setMenuOpen(false); onOpenCompare(); }}
+                className="min-h-11 text-[10px] sm:text-xs tracking-normal sm:tracking-[0.18em] text-[#FF5500]"
               >
                 <RollText>Compare ({compareCount})</RollText>
               </button>
@@ -72,6 +80,8 @@ export default function Navbar({
               onClick={() => setMenuOpen(!menuOpen)}
               className="flex items-center gap-3 p-2 focus:outline-none"
               aria-label="Toggle Menu"
+              aria-expanded={menuOpen}
+              aria-controls="main-menu"
             >
               <span className="hidden sm:inline-block">
                 <RollText>{menuOpen ? "Close" : "Menu"}</RollText>
@@ -102,13 +112,14 @@ export default function Navbar({
       <AnimatePresence>
         {menuOpen && (
           <motion.div
+            id="main-menu"
             initial={{ clipPath: "inset(0 0 100% 0)" }}
             animate={{ clipPath: "inset(0 0 0% 0)" }}
             exit={{ clipPath: "inset(0 0 100% 0)" }}
             transition={{ duration: 0.65, ease: [0.76, 0, 0.24, 1] }}
-            className="fixed inset-0 z-40 bg-[#050505] text-white flex flex-col justify-between p-8 sm:p-16 pt-28"
+            className="fixed inset-0 z-40 bg-[#050505] text-white flex flex-col justify-between gap-10 overflow-y-auto overscroll-contain p-6 sm:p-16 pt-24 sm:pt-28"
           >
-            <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 my-auto max-w-7xl w-full mx-auto">
+            <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 sm:gap-12 my-auto max-w-7xl w-full mx-auto shrink-0">
               <div className="lg:col-span-8 flex flex-col gap-3">
                 {navLinks.map((item, idx) => (
                   <motion.a
@@ -118,7 +129,7 @@ export default function Navbar({
                     initial={{ opacity: 0, y: 40 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ delay: 0.15 + idx * 0.06, duration: 0.5 }}
-                    className="group flex items-baseline gap-6 font-display font-black text-4xl sm:text-6xl lg:text-7xl uppercase tracking-tight hover:text-[#FF5500] transition-colors"
+                    className="group flex items-baseline gap-4 sm:gap-6 font-display font-black text-3xl sm:text-6xl lg:text-7xl uppercase tracking-tight hover:text-[#FF5500] transition-colors"
                   >
                     <span className="font-mono text-xs text-[#FF5500]">
                       0{idx + 1}
@@ -148,7 +159,7 @@ export default function Navbar({
               </div>
             </div>
 
-            <div className="max-w-7xl w-full mx-auto flex items-center justify-between text-[11px] font-mono uppercase tracking-[0.2em] text-neutral-500 border-t border-white/10 pt-6">
+            <div className="max-w-7xl w-full mx-auto flex flex-col sm:flex-row gap-3 items-start sm:items-center justify-between text-[10px] sm:text-[11px] font-mono uppercase tracking-[0.2em] text-neutral-500 border-t border-white/10 pt-6 shrink-0">
               <span>Flexi Rental Sri Lanka &apos;26</span>
               <span>Airport delivery &amp; return • 24/7 customer support</span>
             </div>

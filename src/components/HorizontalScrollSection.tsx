@@ -7,7 +7,9 @@ import {
   useTransform,
   useSpring,
   useVelocity,
+  useMotionValue,
 } from "framer-motion";
+import { PINNED_SCROLL_QUERY, useMediaQuery } from "@/lib/use-media-query";
 import { responsiveImage } from "@/lib/responsive-image";
 import { ArrowUpRight } from "lucide-react";
 import { formatDailyRate } from "@/data/fleetData";
@@ -82,26 +84,33 @@ export default function HorizontalScrollSection() {
   const viewportRef = useRef<HTMLDivElement>(null);
   const trackRef = useRef<HTMLDivElement>(null);
   const [travel, setTravel] = useState(0);
+  const pinned = useMediaQuery(PINNED_SCROLL_QUERY);
+  const swipeProgress = useMotionValue(0);
 
   useEffect(() => {
     const viewport = viewportRef.current;
     const track = trackRef.current;
     if (!viewport || !track) return;
-    const measure = () => setTravel(Math.max(0, track.scrollWidth - viewport.clientWidth));
+    const measure = () => {
+      const distance = Math.max(0, track.scrollWidth - viewport.clientWidth);
+      setTravel(distance);
+      swipeProgress.set(distance ? viewport.scrollLeft / distance : 0);
+    };
     const observer = new ResizeObserver(measure);
     observer.observe(viewport);
     observer.observe(track);
     measure();
     return () => observer.disconnect();
-  }, []);
+  }, [swipeProgress]);
 
   const { scrollYProgress } = useScroll({
     target: sectionRef,
     offset: ["start start", "end end"],
   });
 
-  // Smooth spring progress for the horizontal translation
-  const smoothProgress = useSpring(scrollYProgress, {
+  const reelProgress = useTransform<number, number>([scrollYProgress, swipeProgress], ([vertical, swipe]) => pinned ? vertical : swipe);
+  // Desktop scrolling and touch swiping share the same progress indicators.
+  const smoothProgress = useSpring(reelProgress, {
     stiffness: 90,
     damping: 26,
     restDelta: 0.0005,
@@ -126,18 +135,18 @@ export default function HorizontalScrollSection() {
   const rawSkew = useTransform(scrollVelocity, [-0.8, 0, 0.8], [5, 0, -5]);
   const skewX = useSpring(rawSkew, { stiffness: 220, damping: 28 });
 
-  const progressPct = useTransform(scrollYProgress, value => `${String(Math.round(Math.max(0, Math.min(1, value)) * 100)).padStart(3, "0")}%`);
-  const odometerKm = useTransform(scrollYProgress, value => `${String(Math.round(Math.max(0, Math.min(1, value)) * 485)).padStart(3, "0")} KM`);
+  const progressPct = useTransform(reelProgress, value => `${String(Math.round(Math.max(0, Math.min(1, value)) * 100)).padStart(3, "0")}%`);
+  const odometerKm = useTransform(reelProgress, value => `${String(Math.round(Math.max(0, Math.min(1, value)) * 485)).padStart(3, "0")} KM`);
 
   return (
     <section
       id="island-routes"
       ref={sectionRef}
-      style={{ height: `calc(100vh + ${travel}px)` }}
+      style={{ height: pinned ? `calc(100svh + ${travel}px)` : "auto" }}
       className="relative bg-[#050505] border-t border-white/10"
     >
       {/* Sticky Full-Screen Viewport that Hijacks Vertical Scroll into Horizontal Motion */}
-      <div className="sticky top-0 h-screen w-full overflow-hidden flex flex-col justify-between py-10 sm:py-14">
+      <div className={`${pinned ? "sticky top-0 h-[100svh]" : "relative"} w-full overflow-hidden flex flex-col justify-between py-10 sm:py-14`}>
         {/* Background Giant Kinetic Typography Watermark */}
         <div className="pointer-events-none absolute inset-0 flex items-center overflow-hidden select-none z-0">
           <motion.div
@@ -172,14 +181,17 @@ export default function HorizontalScrollSection() {
               <motion.span className="text-[#FF5500] font-bold tabular-nums">{progressPct}</motion.span>
             </div>
           </div>
+          {!pinned && <p className="w-full text-xs text-neutral-400">Swipe or scroll sideways to explore →</p>}
         </div>
 
         {/* Main Horizontal Sliding Track */}
-        <div ref={viewportRef} className="relative z-10 flex items-center flex-1 overflow-visible my-4">
+        <div ref={viewportRef} tabIndex={pinned ? undefined : 0} role="region" aria-label="Sri Lanka rental routes" onScroll={event => {
+          if (!pinned) swipeProgress.set(travel ? event.currentTarget.scrollLeft / travel : 0);
+        }} className={`relative z-10 flex items-center flex-1 my-6 ${pinned ? "overflow-visible" : "overflow-x-auto overscroll-x-contain snap-x snap-mandatory scroll-px-6 pb-4"}`}>
           <motion.div
             ref={trackRef}
-            style={{ x: xTranslate, skewX }}
-            className="flex items-stretch gap-8 sm:gap-12 px-6 sm:px-16 w-max"
+            style={{ x: pinned ? xTranslate : 0, skewX: pinned ? skewX : 0 }}
+            className="flex items-stretch gap-5 sm:gap-12 px-6 sm:px-16 w-max [&>*]:snap-start"
           >
             {/* ===============================================================
                 INTRO TITLE PANEL (PANEL 00)
@@ -196,7 +208,7 @@ export default function HorizontalScrollSection() {
               </div>
 
               <p className="text-neutral-400 text-base sm:text-lg font-light leading-relaxed my-6">
-                Scroll vertically to glide across our most popular Sri Lankan
+                {pinned ? "Scroll vertically to glide" : "Swipe sideways to browse"} across our most popular Sri Lankan
                 driving routes—matched with the exact everyday car, hybrid, SUV,
                 or van built for that journey.
               </p>
@@ -204,7 +216,7 @@ export default function HorizontalScrollSection() {
               <div className="pt-6 border-t border-white/10 flex items-center justify-between">
                 <div className="font-mono text-xs uppercase tracking-[0.2em] text-white flex items-center gap-3">
                   <span className="w-2.5 h-2.5 rounded-full bg-[#FF5500] animate-ping" />
-                  <span>Scroll to Explore Sideways</span>
+                  <span>{pinned ? "Scroll to Explore Sideways" : "Swipe to Explore"}</span>
                 </div>
                 <span className="font-display font-black text-3xl text-[#FF5500]">
                   →
@@ -223,16 +235,16 @@ export default function HorizontalScrollSection() {
                 inquiry={`Trip: ${card.route}`}
                 aria-label={`Plan ${card.route} with ${card.vehicle.name} on WhatsApp`}
                 data-cursor="CHAT"
-                className="group cursor-pointer w-[88vw] sm:w-[600px] lg:w-[680px] shrink-0 bg-[#0B0B0B] border border-white/15 hover:border-[#FF5500] transition-colors duration-300 grid grid-cols-1 md:grid-cols-12 overflow-hidden"
+                className="group cursor-pointer w-[calc(100vw-3rem)] sm:w-[600px] lg:w-[680px] shrink-0 bg-[#0B0B0B] border border-white/15 hover:border-[#FF5500] transition-colors duration-300 grid grid-cols-1 sm:grid-cols-12 overflow-hidden"
               >
                 {/* Left Image Column with Internal Horizontal Pan Parallax */}
-                <div className="md:col-span-6 relative min-h-[240px] md:min-h-[420px] overflow-hidden bg-black">
+                <div className="sm:col-span-6 relative h-56 sm:h-auto sm:min-h-[420px] overflow-hidden bg-black">
                   <motion.img
-                    {...responsiveImage(card.image, "(min-width: 768px) 340px, 88vw")}
+                    {...responsiveImage(card.image, "(min-width: 640px) 340px, 88vw")}
                     loading="lazy" decoding="async"
                     alt={card.imageAlt}
                     style={{ objectPosition: imgObjectPos }}
-                    className="w-full h-full object-cover transition-transform duration-700"
+                    className="absolute inset-0 w-full h-full object-cover transition-transform duration-700"
                   />
                   <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/20 to-transparent" />
 
@@ -242,7 +254,7 @@ export default function HorizontalScrollSection() {
                     </span>
                   </div>
 
-                  <div className="absolute bottom-4 left-4 right-4 flex items-end justify-between">
+                  <div className="absolute bottom-4 left-4 right-4 flex flex-wrap gap-2 items-end justify-between">
                     <div>
                       <span className="font-mono text-[10px] uppercase tracking-[0.2em] text-neutral-300 block">
                         RECOMMENDED CAR
@@ -258,9 +270,9 @@ export default function HorizontalScrollSection() {
                 </div>
 
                 {/* Right Editorial Specs Column */}
-                <div className="md:col-span-6 min-w-0 p-7 sm:p-9 flex flex-col justify-between">
+                <div className="sm:col-span-6 min-w-0 p-5 sm:p-9 flex flex-col justify-between">
                   <div>
-                    <div className="flex items-center justify-between font-mono text-xs text-neutral-400 mb-4 pb-3 border-b border-white/10">
+                    <div className="flex flex-wrap gap-2 items-center justify-between font-mono text-[10px] sm:text-xs text-neutral-400 mb-4 pb-3 border-b border-white/10">
                       <span className="text-[#FF5500] font-bold">
                         ROUTE // {card.num}
                       </span>
@@ -342,8 +354,8 @@ export default function HorizontalScrollSection() {
                 </p>
               </div>
 
-              <div className="pt-6 border-t border-black/20 flex items-center justify-between font-mono text-xs font-bold uppercase tracking-[0.2em]">
-                <span className="px-5 py-3 bg-black text-white group-hover:bg-white group-hover:text-black transition-colors">
+              <div className="pt-6 border-t border-black/20 flex items-center justify-between gap-2 font-mono text-[10px] sm:text-xs font-bold uppercase tracking-wider sm:tracking-[0.2em]">
+                <span className="px-3 sm:px-5 py-3 bg-black text-white group-hover:bg-white group-hover:text-black transition-colors">
                   <RollText>[ Chat on WhatsApp ]</RollText>
                 </span>
                 <span className="text-2xl">↗</span>

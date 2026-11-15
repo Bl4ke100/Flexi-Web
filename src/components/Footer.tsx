@@ -92,7 +92,7 @@ export default function Footer() {
             </div>
             <WhatsAppLink
               inquiry="I'm interested in weekly or monthly rental packages."
-              className="self-start px-6 py-3.5 border border-white/25 hover:border-[#FF5500] text-white hover:text-[#FF5500] font-mono text-xs font-bold uppercase tracking-[0.2em] transition-colors"
+              className="self-start max-w-full px-4 sm:px-6 py-3.5 border border-white/25 hover:border-[#FF5500] text-white hover:text-[#FF5500] font-mono text-[10px] sm:text-xs font-bold uppercase tracking-[0.15em] sm:tracking-[0.2em] transition-colors"
             >
               <RollText>[ Ask for Monthly Rates ]</RollText>
             </WhatsAppLink>

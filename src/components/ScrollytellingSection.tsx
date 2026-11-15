@@ -6,6 +6,7 @@ import React, { useRef, useState, useEffect } from "react";
 import WhatsAppLink from "./WhatsAppLink";
 import { useSiteContent } from "./SiteContentProvider";
 import { DEFAULT_ABOUT_IMAGES } from "@/data/aboutImages";
+import { PINNED_SCROLL_QUERY, useMediaQuery } from "@/lib/use-media-query";
 import {
   motion,
   useScroll,
@@ -206,6 +207,7 @@ function TiltVaultTile({
 export default function ScrollytellingSection() {
   const { settings, fleet } = useSiteContent();
   const aboutImages = settings.aboutImages ?? DEFAULT_ABOUT_IMAGES;
+  const pinned = useMediaQuery(PINNED_SCROLL_QUERY);
   // 1. Scroll-Linked Mosaic Carousel Track
   const aboutRef = useRef<HTMLElement>(null);
   const { scrollYProgress: aboutScroll } = useScroll({
@@ -286,9 +288,9 @@ export default function ScrollytellingSection() {
         </div>
 
         {/* Scroll-Driven Mosaic Staggered Image Carousel */}
-        <div className="relative w-full overflow-hidden py-8 mb-24 select-none">
+        <div tabIndex={pinned ? undefined : 0} role="region" aria-label="About Flexi Rental photos" className={`relative w-full py-8 mb-16 sm:mb-24 select-none ${pinned ? "overflow-hidden" : "overflow-x-auto overscroll-x-contain snap-x snap-mandatory scroll-px-6"}`}>
           <motion.div
-            style={{ x: carouselX }}
+            style={{ x: pinned ? carouselX : 0 }}
             className="flex items-center gap-6 px-6 w-max"
           >
             {[0, 1, 2, 3, 4, 5, 6, 7].map((panelIdx) => {
@@ -300,7 +302,7 @@ export default function ScrollytellingSection() {
               return (
                 <div
                   key={panelIdx}
-                  className="flex flex-col gap-6 shrink-0 w-[230px] sm:w-[290px]"
+                  className="flex flex-col gap-6 shrink-0 w-[230px] sm:w-[290px] snap-start"
                 >
                   {isDouble ? (
                     <>
@@ -407,9 +409,10 @@ export default function ScrollytellingSection() {
       <section
         id="disciplines"
         ref={disciplinesRef}
-        className="relative h-[320vh] border-t border-white/10 bg-[#050505]"
+        style={{ height: pinned ? "320svh" : "auto" }}
+        className="relative border-t border-white/10 bg-[#050505]"
       >
-        <div className="sticky top-0 h-screen w-full overflow-hidden flex flex-col justify-center py-20">
+        <div className={`${pinned ? "pinned-story sticky top-0 h-[100svh] overflow-hidden" : "relative"} w-full flex flex-col justify-center py-20`}>
           <div className="max-w-[1360px] w-full mx-auto px-6 sm:px-12">
             <header className="mb-12">
               <p className="font-mono text-xs uppercase tracking-[0.25em] text-[#FF5500] mb-3">
@@ -422,7 +425,13 @@ export default function ScrollytellingSection() {
               />
             </header>
 
-            <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
+            {!pinned && <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+              {DISCIPLINES.map(item => <article key={item.num} className="min-w-0 overflow-hidden border border-white/15 bg-[#0D0D0D]">
+                <div className="aspect-[4/3] overflow-hidden"><OptimizedImage src={item.image} sizes="(min-width: 640px) 50vw, 100vw" alt={item.title} className="h-full w-full object-cover" /></div>
+                <div className="p-5"><span className="font-mono text-xs text-[#FF5500]">SERVICE // {item.num}</span><h3 className="font-display font-bold text-2xl mt-3 mb-2">{item.title}</h3><p className="text-sm text-neutral-400 leading-relaxed">{item.desc}</p></div>
+              </article>)}
+            </div>}
+            <div className={`${pinned ? "grid" : "hidden"} grid-cols-1 lg:grid-cols-12 gap-12 items-center`}>
               {/* Left 7 Columns: 6 Interactive / Scroll-Driven Steps */}
               <div className="lg:col-span-7 divide-y divide-white/10">
                 {DISCIPLINES.map((item, idx) => {
@@ -510,9 +519,10 @@ export default function ScrollytellingSection() {
       <section
         id="process"
         ref={processRef}
-        className="relative h-[260vh] border-t border-white/10 bg-[#070707]"
+        style={{ height: pinned ? "260svh" : "auto" }}
+        className="relative border-t border-white/10 bg-[#070707]"
       >
-        <div className="sticky top-0 h-screen w-full overflow-hidden flex flex-col justify-center py-20">
+        <div className={`${pinned ? "pinned-story sticky top-0 h-[100svh] overflow-hidden" : "relative"} w-full flex flex-col justify-center py-20`}>
           <div className="max-w-[1360px] w-full mx-auto px-6 sm:px-12">
             <header className="mb-14">
               <p className="font-mono text-xs uppercase tracking-[0.25em] text-[#FF5500] mb-3">
@@ -532,7 +542,7 @@ export default function ScrollytellingSection() {
             <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
               {/* Left 5 Columns: 30-Tick SVG Radial Gauge */}
               <div className="lg:col-span-5 flex items-center justify-center">
-                <div className="relative w-64 h-64 sm:w-80 sm:h-80 flex items-center justify-center">
+                <div className="relative w-48 h-48 sm:w-64 sm:h-64 xl:w-80 xl:h-80 flex items-center justify-center">
                   <svg viewBox="0 0 200 200" className="w-full h-full">
                     {GAUGE_TICKS.map((t, i) => {
                       const isLit = i < litTicks;
@@ -563,7 +573,7 @@ export default function ScrollytellingSection() {
               </div>
 
               {/* Right 7 Columns: 5 Steps List */}
-              <ol className="lg:col-span-7 grid grid-cols-1 sm:grid-cols-2 gap-6">
+              <ol className="process-list lg:col-span-7 grid grid-cols-1 sm:grid-cols-2 gap-6">
                 {PROCESS_STEPS.map((s, idx) => {
                   const isActive = activeProcessStep === idx;
                   return (
@@ -576,7 +586,7 @@ export default function ScrollytellingSection() {
                       className={`p-6 border transition-all duration-300 cursor-pointer ${
                         isActive
                           ? "bg-[#111111] border-[#FF5500] shadow-[0_0_35px_rgba(255,85,0,0.18)]"
-                          : "bg-[#0A0A0A] border-white/10 opacity-50 hover:opacity-85"
+                          : `bg-[#0A0A0A] border-white/10 ${pinned ? "opacity-50 hover:opacity-85" : "opacity-100"}`
                       }`}
                     >
                       <span className="font-mono text-[11px] uppercase tracking-[0.2em] text-[#FF5500] block mb-2">

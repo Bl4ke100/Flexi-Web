@@ -37,6 +37,7 @@ test("Public About mosaic uses the saved image slots in its existing twelve-fram
     "@/components/OptimizedImage": ({ sizes, ...props }) => createElement("img", props),
     "@/lib/gauge": loadTypescript("../src/lib/gauge.ts"),
     "@/data/aboutImages": artwork,
+    "@/lib/use-media-query": loadTypescript("../src/lib/use-media-query.ts"),
     "./WhatsAppLink": ({ children }) => createElement("a", null, children),
     "./SiteContentProvider": { useSiteContent: () => ({ settings: { ...content.settings, aboutImages: customImages }, fleet: content.fleet }) },
     "./AnimatedText": {

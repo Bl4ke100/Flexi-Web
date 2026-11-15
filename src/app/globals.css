@@ -18,6 +18,29 @@ body {
   overflow-x: hidden;
 }
 
+section[id] {
+  scroll-margin-top: 4rem;
+}
+
+/* Keep controls usable without Safari zooming the page when a field is focused. */
+@media (max-width: 639px) {
+  input, textarea, select {
+    font-size: 16px !important;
+  }
+}
+
+@media (max-width: 1023px) {
+  .hero-content {
+    transform: none !important;
+  }
+}
+
+@media (max-height: 999px) {
+  .pinned-story { padding-block: 40px; }
+  .pinned-story header { margin-bottom: 24px; }
+  .pinned-story .process-list { gap: 16px; }
+}
+
 ::selection {
   background-color: #FF5500;
   color: #FFFFFF;

@@ -83,7 +83,7 @@ export default function FleetShowroom({
                   key={category}
                   onClick={() => { setSelectedCategory(category); setPage(1); }}
                   aria-pressed={active}
-                  className={`px-3.5 py-2 border transition-all duration-300 ${
+                  className={`min-h-11 px-3.5 py-2 border transition-all duration-300 ${
                     active
                       ? "bg-[#FF5500] border-[#FF5500] text-black font-bold"
                       : "bg-transparent border-white/15 text-neutral-400 hover:border-white hover:text-white"
@@ -147,7 +147,7 @@ export default function FleetShowroom({
                             e.stopPropagation();
                             onToggleCompare(car);
                           }}
-                          className={`px-3.5 py-1.5 backdrop-blur-md border font-mono text-[10px] uppercase tracking-[0.18em] flex items-center gap-1.5 transition-all ${
+                          className={`min-h-11 px-3.5 py-1.5 backdrop-blur-md border font-mono text-[10px] uppercase tracking-[0.18em] flex items-center gap-1.5 transition-all ${
                             inCompare
                               ? "bg-[#FF5500] text-black border-[#FF5500] font-bold"
                               : "bg-black/75 text-white border-white/20 hover:border-[#FF5500]"

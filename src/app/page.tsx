@@ -53,7 +53,7 @@ export default function HomePage() {
         <div aria-hidden="true" className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_at_85%_25%,rgba(255,85,0,0.12),transparent_60%)]" />
         <div aria-hidden="true" className="pointer-events-none absolute right-[-0.06em] top-[12%] font-display font-black text-[30vw] leading-none tracking-tighter text-white/[0.025] select-none">FLEXI</div>
 
-        <motion.div style={{ y: heroContentY }} className="relative z-10 max-w-[1400px] w-full mx-auto px-6 sm:px-12 grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-16 items-end">
+        <motion.div style={{ y: heroContentY }} className="hero-content relative z-10 max-w-[1400px] w-full mx-auto px-6 sm:px-12 grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-16 items-end">
           <div className="lg:col-span-7 space-y-6">
             <div className="flex flex-wrap items-center gap-3 font-mono text-xs uppercase tracking-[0.2em]">
               <span className="px-3 py-1 bg-[#FF5500] text-black font-bold">Welcome to Flexi Rental</span>

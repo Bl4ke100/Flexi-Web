@@ -400,7 +400,7 @@ export default function LFGShowcaseExtras() {
       =================================================================== */}
       <section className="relative py-32 sm:py-44 border-b border-white/10">
         <div className="max-w-[1360px] mx-auto px-6 sm:px-12">
-          <div className="flex items-center justify-between mb-12">
+          <div className="flex flex-wrap gap-3 items-center justify-between mb-12">
             <p className="font-mono text-xs uppercase tracking-[0.25em] text-[#FF5500]">
               <ScrambleText text="(The Flexi Standard)" />
             </p>
@@ -613,9 +613,9 @@ export default function LFGShowcaseExtras() {
                 <div key={item.num} className="py-6">
                   <button
                     onClick={() => setOpenFaqIdx(isOpen ? null : idx)}
-                    className="w-full flex items-start justify-between gap-6 text-left group"
+                    className="w-full flex items-start justify-between gap-3 sm:gap-6 text-left group"
                   >
-                    <div className="flex items-baseline gap-5">
+                    <div className="min-w-0 flex items-baseline gap-3 sm:gap-5">
                       <span className="font-mono text-xs font-bold text-[#FF5500]">
                         {item.num}
                       </span>
@@ -630,13 +630,13 @@ export default function LFGShowcaseExtras() {
                       </h3>
                     </div>
                     <span
-                      className={`mt-1 w-8 h-8 shrink-0 border flex items-center justify-center transition-all duration-300 ${
+                      className={`mt-1 w-8 h-8 shrink-0 border flex items-center justify-center transition-colors duration-300 ${
                         isOpen
-                          ? "bg-[#FF5500] border-[#FF5500] text-black rotate-45"
+                          ? "bg-[#FF5500] border-[#FF5500] text-black"
                           : "border-white/20 text-white group-hover:border-[#FF5500]"
                       }`}
                     >
-                      <Plus className="w-4 h-4" />
+                      <Plus className={`w-4 h-4 transition-transform duration-300 ${isOpen ? "rotate-45" : ""}`} />
                     </span>
                   </button>
 

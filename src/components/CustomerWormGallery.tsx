@@ -36,6 +36,17 @@ export default function CustomerWormGallery() {
   }, [sceneReady]);
   const [selectedPhoto, setSelectedPhoto] = useState<CustomerPhoto | null>(null);
   const [fullGalleryOpen, setFullGalleryOpen] = useState(false);
+  const modalOpen = !!selectedPhoto || fullGalleryOpen;
+  useEffect(() => {
+    if (!modalOpen) return;
+    const previousOverflow = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    const closeOnEscape = (event: KeyboardEvent) => {
+      if (event.key === "Escape") { setSelectedPhoto(null); setFullGalleryOpen(false); }
+    };
+    window.addEventListener("keydown", closeOnEscape);
+    return () => { document.body.style.overflow = previousOverflow; window.removeEventListener("keydown", closeOnEscape); };
+  }, [modalOpen]);
   const [query, setQuery] = useState("");
   const filteredPhotos = photos.filter(photo => matchesSearch(query, photo.customerName, photo.vehicleName, photo.location, photo.tripTag));
 
@@ -54,10 +65,10 @@ export default function CustomerWormGallery() {
     <section
       id="customer-moments"
       ref={sectionRef}
-      className={`relative ${photos.length ? "h-[580vh]" : "min-h-screen"} bg-[#050505] border-t border-white/10 select-none`}
+      className={`relative ${photos.length ? "h-[580svh]" : "min-h-[100svh]"} bg-[#050505] border-t border-white/10 select-none`}
     >
       {/* Sticky Full-Screen Stage */}
-      <div className="sticky top-0 h-screen w-full overflow-hidden flex flex-col justify-between">
+      <div className="sticky top-0 h-[100svh] w-full overflow-hidden flex flex-col justify-between">
         {/* ===================================================================
             WEBGL / THREE.JS TRUE 3D BENDING HELICAL FILM TAPE + Z=0 HEADLINE
         =================================================================== */}
@@ -75,12 +86,12 @@ export default function CustomerWormGallery() {
         {/* ===================================================================
             TOP & BOTTOM UI CORNERS
         =================================================================== */}
-        <div className="pointer-events-none relative z-30 w-full max-w-[1440px] mx-auto px-6 sm:px-12 pt-24 flex items-center justify-between">
+        <div className="pointer-events-none relative z-30 w-full max-w-[1440px] mx-auto px-6 sm:px-12 pt-20 sm:pt-24 flex flex-wrap gap-3 items-center justify-between">
           <span className="font-mono text-xs uppercase tracking-[0.25em] text-[#FF5500] flex items-center gap-2">
             <FourPointStar className="w-3.5 h-3.5 text-[#FF5500]" />
             (Customer Gallery)
           </span>
-          <span className="font-mono text-[11px] uppercase tracking-[0.22em] text-neutral-400">
+          <span className="font-mono text-[9px] sm:text-[11px] uppercase tracking-[0.16em] sm:tracking-[0.22em] text-neutral-400">
             {photos.length ? "Scroll until all frames pass ↑" : "Customer journeys"}
           </span>
         </div>
@@ -115,17 +126,18 @@ export default function CustomerWormGallery() {
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             onClick={() => setSelectedPhoto(null)}
-            className="fixed inset-0 z-[80] bg-black/90 backdrop-blur-md flex items-center justify-center p-6"
+            className="fixed inset-0 z-[80] bg-black/90 backdrop-blur-md flex items-center justify-center p-4 sm:p-6"
           >
             <motion.div
               initial={{ scale: 0.9, y: 20 }}
               animate={{ scale: 1, y: 0 }}
               exit={{ scale: 0.9, y: 20 }}
               onClick={(e) => e.stopPropagation()}
-              className="relative max-w-3xl w-full bg-[#0D0D0D] border border-[#FF5500] overflow-hidden"
+              className="relative max-w-3xl max-h-[calc(100dvh-2rem)] w-full bg-[#0D0D0D] border border-[#FF5500] overflow-y-auto overscroll-contain"
             >
               <button
                 onClick={() => setSelectedPhoto(null)}
+                aria-label="Close customer photo"
                 className="absolute top-4 right-4 z-10 w-10 h-10 bg-black/80 border border-white/20 text-white hover:bg-[#FF5500] hover:text-black flex items-center justify-center transition-colors"
               >
                 <X className="w-5 h-5" />
@@ -182,20 +194,21 @@ export default function CustomerWormGallery() {
               onClick={(e) => e.stopPropagation()}
               className="max-w-7xl mx-auto"
             >
-              <div className="flex flex-wrap items-center justify-between gap-4 pb-8 mb-10 border-b border-white/15">
-                <div>
-                  <span className="font-mono text-xs uppercase tracking-[0.25em] text-[#FF5500] block mb-1">
+              <div className="flex items-start justify-between gap-4 pb-8 mb-10 border-b border-white/15">
+                <div className="min-w-0">
+                  <span className="font-mono text-[10px] sm:text-xs uppercase tracking-[0.18em] text-[#FF5500] block mb-1">
                     (All Customer Handovers)
                   </span>
-                  <h3 className="font-display font-black text-3xl sm:text-5xl text-white uppercase">
+                  <h3 className="font-display font-black text-2xl sm:text-5xl text-white uppercase">
                     THE DRIVES WE MADE{" "}
                     <span className="text-[#FF5500]">MEMORIES</span>
                   </h3>
                 </div>
-                <div className="flex items-center gap-4">
+                <div className="shrink-0 w-11 h-11">
                   <button
                     onClick={() => setFullGalleryOpen(false)}
-                    className="w-11 h-11 border border-white/20 text-white hover:border-[#FF5500] flex items-center justify-center"
+                    aria-label="Close full gallery"
+                    className="fixed top-6 right-6 sm:top-12 sm:right-12 z-10 w-11 h-11 bg-[#050505] border border-white/20 text-white hover:border-[#FF5500] flex items-center justify-center"
                   >
                     <X className="w-5 h-5" />
                   </button>

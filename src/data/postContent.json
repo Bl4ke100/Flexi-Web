@@ -1,0 +1,517 @@
+{
+  "settings": {
+    "companyName": "Flexi Rental",
+    "whatsappNumber": "94742074851",
+    "australiaPhone": "0450330709",
+    "contactEmail": "info.flexirental@gmail.com",
+    "socialName": "Flexi Rental",
+    "tagline": "Make Your Ride Better",
+    "heroIntro": "Make your ride better with Flexi Rental. Explore our cars, hybrids, SUVs, and vans for short or long stays in Sri Lanka, with airport pickup and return and 24/7 customer support.",
+    "aboutTitle": "Comfort. Style. A better ride.",
+    "aboutDescription": "Flexi Rental offers short- and long-term vehicle rentals in Sri Lanka, airport pickup and return, and luxury wedding cars. Choose from Toyota, Honda, Suzuki, and Nissan models, then contact our team for availability, rental insurance details, and a quote for your dates.",
+    "airportTitle": "Airport pickup. Airport return.",
+    "airportDescription": "Arrange your vehicle pickup and return at the airport. Send your flight details, rental dates, and preferred model on WhatsApp so our team can confirm the handover arrangements.",
+    "supportTitle": "Customer support, 24/7.",
+    "supportDescription": "Our customer support team is available around the clock. Message us before your arrival or during your rental for help with your journey.",
+    "valueTitle": "Great rentals for your stay.",
+    "valueDescription": "Ask about short- and long-term rental options, airport arrangements, and luxury wedding cars. Our team will confirm the available vehicles and a quote for your dates.",
+    "qualityTitle": "Clean. Comfortable. Ready to go.",
+    "qualityDescription": "Choose a clean, well-maintained vehicle with a comfortable interior. Speak to our team about the right rental for your journey."
+  },
+  "fleet": [
+    {
+      "id": "suzuki-wagon-r",
+      "name": "Wagon R",
+      "brand": "Suzuki",
+      "year": null,
+      "category": "Compact & City",
+      "tagline": "Compact rental for everyday journeys.",
+      "pricePerDay": null,
+      "deposit": null,
+      "fuelEconomy": "On request",
+      "engineOrType": "Compact & City",
+      "transmission": "Confirm with team",
+      "seats": null,
+      "luggage": "On request",
+      "image": "/posts/suzuki-wagon-r.png",
+      "imageFit": "contain",
+      "badge": "Rent a car insurance",
+      "status": "on-request",
+      "availableIn": [
+        "Airport pickup & return"
+      ],
+      "features": [
+        "Airport pickup and return",
+        "24/7 customer support",
+        "Short- and long-term rental options"
+      ]
+    },
+    {
+      "id": "suzuki-wagon-r-stingray",
+      "name": "Wagon R Stingray",
+      "brand": "Suzuki",
+      "year": null,
+      "category": "Compact & City",
+      "tagline": "Choose the Wagon R Stingray for your next rental. Ask about availability for your dates.",
+      "pricePerDay": null,
+      "deposit": null,
+      "fuelEconomy": "On request",
+      "engineOrType": "Compact & City",
+      "transmission": "Confirm with team",
+      "seats": null,
+      "luggage": "On request",
+      "image": "/posts/suzuki-wagon-r-stingray.png",
+      "imageFit": "contain",
+      "badge": "Rent a car insurance",
+      "status": "on-request",
+      "availableIn": [
+        "Airport pickup & return"
+      ],
+      "features": [
+        "Airport pickup and return",
+        "24/7 customer support",
+        "Short- and long-term rental options"
+      ]
+    },
+    {
+      "id": "suzuki-wagon-r-fz-safety",
+      "name": "Wagon R FZ Safety",
+      "brand": "Suzuki",
+      "year": null,
+      "category": "Compact & City",
+      "tagline": "Ask about the Wagon R FZ Safety for your rental dates.",
+      "pricePerDay": null,
+      "deposit": null,
+      "fuelEconomy": "On request",
+      "engineOrType": "Compact & City",
+      "transmission": "Confirm with team",
+      "seats": null,
+      "luggage": "On request",
+      "image": "/posts/suzuki-wagon-r-fz-safety.png",
+      "imageFit": "contain",
+      "badge": "Rent a car insurance",
+      "status": "on-request",
+      "availableIn": [
+        "Airport pickup & return"
+      ],
+      "features": [
+        "Airport pickup and return",
+        "24/7 customer support",
+        "Short- and long-term rental options"
+      ]
+    },
+    {
+      "id": "toyota-axio",
+      "name": "Axio",
+      "brand": "Toyota",
+      "year": null,
+      "category": "Sedan",
+      "tagline": "A comfortable sedan for your stay in Sri Lanka.",
+      "pricePerDay": null,
+      "deposit": null,
+      "fuelEconomy": "On request",
+      "engineOrType": "Sedan",
+      "transmission": "Confirm with team",
+      "seats": null,
+      "luggage": "On request",
+      "image": "/posts/toyota-axio.png",
+      "imageFit": "contain",
+      "badge": "Rent a car insurance",
+      "status": "on-request",
+      "availableIn": [
+        "Airport pickup & return"
+      ],
+      "features": [
+        "Airport pickup and return",
+        "24/7 customer support",
+        "Short- and long-term rental options"
+      ]
+    },
+    {
+      "id": "toyota-allion",
+      "name": "Allion",
+      "brand": "Toyota",
+      "year": null,
+      "category": "Sedan",
+      "tagline": "Comfort and style for short and long stays.",
+      "pricePerDay": null,
+      "deposit": null,
+      "fuelEconomy": "On request",
+      "engineOrType": "Sedan",
+      "transmission": "Confirm with team",
+      "seats": null,
+      "luggage": "On request",
+      "image": "/posts/toyota-allion.png",
+      "imageFit": "contain",
+      "badge": "Rent a car insurance",
+      "status": "on-request",
+      "availableIn": [
+        "Airport pickup & return"
+      ],
+      "features": [
+        "Airport pickup and return",
+        "24/7 customer support",
+        "Short- and long-term rental options"
+      ]
+    },
+    {
+      "id": "toyota-premio",
+      "name": "Premio",
+      "brand": "Toyota",
+      "year": null,
+      "category": "Sedan",
+      "tagline": "A sedan option for your next journey.",
+      "pricePerDay": null,
+      "deposit": null,
+      "fuelEconomy": "On request",
+      "engineOrType": "Sedan",
+      "transmission": "Confirm with team",
+      "seats": null,
+      "luggage": "On request",
+      "image": "/posts/toyota-premio.png",
+      "imageFit": "contain",
+      "badge": "Rent a car insurance",
+      "status": "on-request",
+      "availableIn": [
+        "Airport pickup & return"
+      ],
+      "features": [
+        "Airport pickup and return",
+        "24/7 customer support",
+        "Short- and long-term rental options"
+      ]
+    },
+    {
+      "id": "toyota-prius",
+      "name": "Prius",
+      "brand": "Toyota",
+      "year": null,
+      "category": "Hybrid Sedan",
+      "tagline": "A hybrid option for exploring Sri Lanka.",
+      "pricePerDay": null,
+      "deposit": null,
+      "fuelEconomy": "On request",
+      "engineOrType": "Hybrid",
+      "transmission": "Confirm with team",
+      "seats": null,
+      "luggage": "On request",
+      "image": "/posts/toyota-prius.png",
+      "imageFit": "contain",
+      "badge": "Rent a car insurance",
+      "status": "on-request",
+      "availableIn": [
+        "Airport pickup & return"
+      ],
+      "features": [
+        "Airport pickup and return",
+        "24/7 customer support",
+        "Short- and long-term rental options"
+      ]
+    },
+    {
+      "id": "toyota-prius-3rd-gen",
+      "name": "Prius 3rd Generation",
+      "brand": "Toyota",
+      "year": null,
+      "category": "Hybrid Sedan",
+      "tagline": "Explore Sri Lanka in a third-generation Prius. Ask our team for your rental quote.",
+      "pricePerDay": null,
+      "deposit": null,
+      "fuelEconomy": "On request",
+      "engineOrType": "Hybrid",
+      "transmission": "Confirm with team",
+      "seats": null,
+      "luggage": "On request",
+      "image": "/posts/toyota-prius-3rd-gen.png",
+      "imageFit": "contain",
+      "badge": "Rent a car insurance",
+      "status": "on-request",
+      "availableIn": [
+        "Airport pickup & return"
+      ],
+      "features": [
+        "Airport pickup and return",
+        "24/7 customer support",
+        "Short- and long-term rental options"
+      ]
+    },
+    {
+      "id": "toyota-vitz",
+      "name": "Vitz",
+      "brand": "Toyota",
+      "year": null,
+      "category": "Compact & City",
+      "tagline": "A compact option for city trips and getaways.",
+      "pricePerDay": null,
+      "deposit": null,
+      "fuelEconomy": "On request",
+      "engineOrType": "Compact & City",
+      "transmission": "Confirm with team",
+      "seats": null,
+      "luggage": "On request",
+      "image": "/posts/toyota-vitz.png",
+      "imageFit": "contain",
+      "badge": "Rent a car insurance",
+      "status": "on-request",
+      "availableIn": [
+        "Airport pickup & return"
+      ],
+      "features": [
+        "Airport pickup and return",
+        "24/7 customer support",
+        "Short- and long-term rental options"
+      ]
+    },
+    {
+      "id": "honda-insight",
+      "name": "Insight Hybrid",
+      "brand": "Honda",
+      "year": null,
+      "category": "Hybrid Sedan",
+      "tagline": "A hybrid rental option for short visits and longer stays.",
+      "pricePerDay": null,
+      "deposit": null,
+      "fuelEconomy": "On request",
+      "engineOrType": "Hybrid",
+      "transmission": "Confirm with team",
+      "seats": null,
+      "luggage": "On request",
+      "image": "/posts/honda-insight.png",
+      "imageFit": "contain",
+      "badge": "Rent a car insurance",
+      "status": "on-request",
+      "availableIn": [
+        "Airport pickup & return"
+      ],
+      "features": [
+        "Airport pickup and return",
+        "24/7 customer support",
+        "Short- and long-term rental options"
+      ]
+    },
+    {
+      "id": "honda-vezel",
+      "name": "Vezel",
+      "brand": "Honda",
+      "year": null,
+      "category": "SUV & Crossover",
+      "tagline": "A crossover for your next Sri Lankan getaway.",
+      "pricePerDay": null,
+      "deposit": null,
+      "fuelEconomy": "On request",
+      "engineOrType": "SUV & Crossover",
+      "transmission": "Confirm with team",
+      "seats": null,
+      "luggage": "On request",
+      "image": "/posts/honda-vezel.png",
+      "imageFit": "contain",
+      "heroImage": "/posts/vezel-photo.png",
+      "badge": "Rent a car insurance",
+      "status": "on-request",
+      "availableIn": [
+        "Airport pickup & return"
+      ],
+      "features": [
+        "Airport pickup and return",
+        "24/7 customer support",
+        "Short- and long-term rental options"
+      ]
+    },
+    {
+      "id": "honda-vezel-rs",
+      "name": "Vezel RS",
+      "brand": "Honda",
+      "year": 2017,
+      "category": "SUV & Crossover",
+      "tagline": "Comfort and style for your getaway in a Honda Vezel RS.",
+      "pricePerDay": null,
+      "deposit": null,
+      "fuelEconomy": "On request",
+      "engineOrType": "SUV & Crossover",
+      "transmission": "Confirm with team",
+      "seats": null,
+      "luggage": "On request",
+      "image": "/posts/honda-vezel-rs.png",
+      "imageFit": "contain",
+      "badge": "Rent a car insurance",
+      "status": "on-request",
+      "availableIn": [
+        "Airport pickup & return"
+      ],
+      "features": [
+        "Airport pickup and return",
+        "24/7 customer support",
+        "Short- and long-term rental options"
+      ]
+    },
+    {
+      "id": "nissan-nv200",
+      "name": "NV200",
+      "brand": "Nissan",
+      "year": null,
+      "category": "Van & Group",
+      "tagline": "Ask our team about the Nissan NV200 for your trip.",
+      "pricePerDay": null,
+      "deposit": null,
+      "fuelEconomy": "On request",
+      "engineOrType": "Van & Group",
+      "transmission": "Confirm with team",
+      "seats": null,
+      "luggage": "On request",
+      "image": "/posts/nissan-nv200.png",
+      "imageFit": "contain",
+      "badge": "Rent a car insurance",
+      "status": "on-request",
+      "availableIn": [
+        "Airport pickup & return"
+      ],
+      "features": [
+        "Airport pickup and return",
+        "24/7 customer support",
+        "Short- and long-term rental options"
+      ]
+    },
+    {
+      "id": "suzuki-fronx",
+      "name": "Fronx",
+      "brand": "Suzuki",
+      "year": null,
+      "category": "SUV & Crossover",
+      "tagline": "Coming soon for rent. Message us for launch and availability updates.",
+      "pricePerDay": null,
+      "deposit": null,
+      "fuelEconomy": "On request",
+      "engineOrType": "SUV & Crossover",
+      "transmission": "Confirm with team",
+      "seats": null,
+      "luggage": "On request",
+      "image": "/posts/suzuki-fronx.png",
+      "imageFit": "contain",
+      "badge": "Coming soon",
+      "status": "coming-soon",
+      "availableIn": [
+        "Airport pickup & return"
+      ],
+      "features": []
+    }
+  ],
+  "deals": [
+    {
+      "id": "airport-delivery-return",
+      "badge": "AIRPORT PICKUP & RETURN",
+      "title": "Start your holiday with Flexi Rental.",
+      "description": "Arrange your airport pickup and return with our team. Share your flight details and dates to request a quote.",
+      "image": "/posts/airport-rentals.png",
+      "imageAlt": "Start your holiday with Flexi Rental.",
+      "cta": "Arrange airport pickup",
+      "inquiry": "I'd like to arrange an airport pickup and return rental.",
+      "published": true,
+      "startsAt": "",
+      "endsAt": ""
+    },
+    {
+      "id": "long-stay-value",
+      "badge": "SHORT & LONG TERM",
+      "title": "A better ride for your whole stay.",
+      "description": "Explore short- and long-term rental options in Sri Lanka. Ask for availability and a quote for your preferred model.",
+      "image": "/posts/long-term-rentals.png",
+      "imageAlt": "A better ride for your whole stay.",
+      "cta": "Ask about rental options",
+      "inquiry": "I'd like a quote for a short- or long-term rental.",
+      "published": true,
+      "startsAt": "",
+      "endsAt": ""
+    },
+    {
+      "id": "luxury-wedding-cars",
+      "badge": "WEDDING CARS",
+      "title": "Arrive in style on your special day.",
+      "description": "Make your special day memorable with a luxury wedding car. Share your wedding date, locations, and preferred car so our team can confirm the options.",
+      "image": "/posts/wedding-cars.png",
+      "imageAlt": "Arrive in style on your special day.",
+      "cta": "Plan your wedding car",
+      "inquiry": "I'd like to arrange a luxury wedding car. Please share the available cars and packages.",
+      "published": true,
+      "startsAt": "",
+      "endsAt": ""
+    },
+    {
+      "id": "extra-500km",
+      "badge": "LIMITED-TIME PROMOTION",
+      "title": "An extra 500 km, free.",
+      "description": "The rental posts advertise an additional 500 km free for a limited time. Confirm eligibility, rental period, and expiry before publishing this offer.",
+      "image": "/posts/extra-500km.png",
+      "imageAlt": "An extra 500 km, free.",
+      "cta": "Ask about the 500 km offer",
+      "inquiry": "Is the extra 500 km promotion available for my rental dates?",
+      "published": false,
+      "startsAt": "",
+      "endsAt": ""
+    }
+  ],
+  "gallery": [
+    {
+      "id": "post-gallery-01",
+      "customerName": "Flexi Rental customer",
+      "location": "Sri Lanka",
+      "vehicleName": "Customer rental",
+      "tripTag": "CUSTOMER HANDOVER",
+      "quote": "Thank you for choosing Flexi Rental.",
+      "image": "/posts/customer-prius.png"
+    },
+    {
+      "id": "post-gallery-02",
+      "customerName": "Flexi Rental customer",
+      "location": "Sri Lanka",
+      "vehicleName": "Customer rental",
+      "tripTag": "CUSTOMER HANDOVER",
+      "quote": "Thank you for choosing Flexi Rental.",
+      "image": "/posts/customer-vitz.png"
+    },
+    {
+      "id": "post-gallery-03",
+      "customerName": "Flexi Rental customer",
+      "location": "Sri Lanka",
+      "vehicleName": "Customer rental",
+      "tripTag": "CUSTOMER HANDOVER",
+      "quote": "Thank you for choosing Flexi Rental.",
+      "image": "/posts/customer-axio.png"
+    },
+    {
+      "id": "post-gallery-04",
+      "customerName": "Flexi Rental customer",
+      "location": "Sri Lanka",
+      "vehicleName": "Customer rental",
+      "tripTag": "CUSTOMER HANDOVER",
+      "quote": "Thank you for choosing Flexi Rental.",
+      "image": "/posts/customer-vezel.png"
+    },
+    {
+      "id": "post-gallery-05",
+      "customerName": "Flexi Rental customer",
+      "location": "Sri Lanka",
+      "vehicleName": "Customer rental",
+      "tripTag": "CUSTOMER HANDOVER",
+      "quote": "Thank you for choosing Flexi Rental.",
+      "image": "/posts/customer-vezel-2.png"
+    },
+    {
+      "id": "post-gallery-06",
+      "customerName": "Flexi Rental wedding",
+      "location": "Sri Lanka",
+      "vehicleName": "Wedding car",
+      "tripTag": "WEDDING RENTAL",
+      "quote": "Thank you for choosing Flexi Rental.",
+      "image": "/posts/wedding-bmw.png"
+    },
+    {
+      "id": "post-gallery-07",
+      "customerName": "Flexi Rental wedding",
+      "location": "Sri Lanka",
+      "vehicleName": "Wedding car",
+      "tripTag": "WEDDING RENTAL",
+      "quote": "Thank you for choosing Flexi Rental.",
+      "image": "/posts/wedding-car.png"
+    }
+  ]
+}

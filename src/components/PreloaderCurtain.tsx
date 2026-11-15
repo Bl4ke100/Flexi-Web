@@ -113,12 +113,12 @@ export default function PreloaderCurtain({
                 <br />— Island-Wide Car Rental
               </p>
               <p className="hidden md:block text-center">
-                Self-Drive <span className="text-[#FF5500]">✦</span> Airport Pickup
+                Car Rentals <span className="text-[#FF5500]">✦</span> Airport Pickup
                 <br />
                 Hybrids <span className="text-[#FF5500]">✦</span> SUVs &amp; Vans
               </p>
               <p className="text-right">
-                Colombo • Kandy • Galle
+                Make Your Ride Better
                 <br />&amp; All Across Sri Lanka
               </p>
             </div>

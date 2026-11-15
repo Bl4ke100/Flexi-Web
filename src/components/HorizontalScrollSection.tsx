@@ -1,96 +1,99 @@
 "use client";
 
-import React, { useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import {
   motion,
   useScroll,
   useTransform,
   useSpring,
   useVelocity,
-  useMotionValueEvent,
 } from "framer-motion";
+import { responsiveImage } from "@/lib/responsive-image";
 import { ArrowUpRight } from "lucide-react";
-import { FLEET_VEHICLES, Vehicle } from "@/data/fleetData";
+import { formatDailyRate } from "@/data/fleetData";
 import { ScrambleText, RollText, FourPointStar } from "./AnimatedText";
-
-interface HorizontalScrollSectionProps {
-  onSelectVehicleForBooking: (vehicle: Vehicle, hubCity: string) => void;
-}
+import WhatsAppLink from "./WhatsAppLink";
+import { useSiteContent } from "./SiteContentProvider";
 
 const HORIZONTAL_CARDS = [
   {
-    num: "01",
-    route: "KATUNAYAKE BIA → COLOMBO",
-    distanceKm: "35 KM EXPRESSWAY",
-    tag: "24/7 AIRPORT PICKUP",
-    title: "Step Off the Plane Into Your Waiting Car",
-    subtitle:
-      "No taxi queues or surge pricing. Our team meets you at Katunayake Arrivals with your sanitized hybrid ready to drive.",
-    vehicle: FLEET_VEHICLES[1], // Toyota Axio Hybrid WxB
-    hub: "Katunayake Airport",
-    image:
-      "https://images.unsplash.com/photo-1621007947382-bb3c3994e3fb?auto=format&fit=crop&w=1400&q=85",
+    "num": "01",
+    "route": "AIRPORT ARRIVAL & DEPARTURE",
+    "distanceKm": "PICKUP & RETURN",
+    "tag": "AIRPORT RENTALS",
+    "title": "Start and finish your trip at the airport.",
+    "vehicleId": "toyota-axio",
+    "image": "/routes/airport-arrival.webp",
+    "imageAlt": "Rental car handover outside an airport in Sri Lanka",
+    "hub": "Airport"
   },
   {
-    num: "02",
-    route: "COLOMBO CITY & SUBURBS",
-    distanceKm: "22 KM/L HYBRID ECONOMY",
-    tag: "DAILY CITY FAVORITE",
-    title: "Beat Colombo Traffic & Save on Fuel",
-    subtitle:
-      "Compact dimensions for easy parking on Galle Road and Union Place, paired with ice-cold dual A/C and automatic hybrid comfort.",
-    vehicle: FLEET_VEHICLES[0], // Suzuki Wagon R Hybrid
-    hub: "Colombo",
-    image:
-      "https://images.unsplash.com/photo-1549317661-bd32c8ce0db2?auto=format&fit=crop&w=1400&q=85",
+    "num": "02",
+    "route": "EVERYDAY CITY JOURNEYS",
+    "distanceKm": "COMPACT RENTALS",
+    "tag": "CITY OPTIONS",
+    "title": "Find a compact car for your stay.",
+    "vehicleId": "suzuki-wagon-r",
+    "image": "/routes/colombo-city.webp",
+    "imageAlt": "A compact city car on a leafy Colombo street",
+    "hub": "By arrangement"
   },
   {
-    num: "03",
-    route: "KANDY → NUWARA ELIYA → ELLA",
-    distanceKm: "210 KM HILL COUNTRY",
-    tag: "HIGHLAND TURBO SUV",
-    title: "Built for Winding Tea Country Roads",
-    subtitle:
-      "High ground clearance, responsive 1.0L turbo torque for steep hairpin bends, and Apple CarPlay for effortless navigation.",
-    vehicle: FLEET_VEHICLES[2], // Toyota Raize Z Turbo
-    hub: "Kandy",
-    image:
-      "https://images.unsplash.com/photo-1533473359331-0135ef1b58bf?auto=format&fit=crop&w=1400&q=85",
+    "num": "03",
+    "route": "SRI LANKAN GETAWAYS",
+    "distanceKm": "SUV & CROSSOVER",
+    "tag": "YOUR NEXT GETAWAY",
+    "title": "Explore your options with a Vezel.",
+    "vehicleId": "honda-vezel",
+    "image": "/routes/hill-country.webp",
+    "imageAlt": "A crossover beside misty tea plantations in Sri Lanka's hill country",
+    "hub": "By arrangement"
   },
   {
-    num: "04",
-    route: "SOUTHERN EXPRESSWAY → GALLE & MIRISSA",
-    distanceKm: "130 KM COASTAL CRUISE",
-    tag: "HIGHWAY COMFORT",
-    title: "Smooth Coastal Runs Down South",
-    subtitle:
-      "Cruise control, Honda Sensing safety suite, and generous boot space for beach bags, surfboards, or family luggage.",
-    vehicle: FLEET_VEHICLES[3], // Honda Vezel RS
-    hub: "Galle",
-    image:
-      "https://images.unsplash.com/photo-1568844293986-8d0400bd4745?auto=format&fit=crop&w=1400&q=85",
+    "num": "04",
+    "route": "SHORT & LONG STAYS",
+    "distanceKm": "FLEXIBLE RENTALS",
+    "tag": "RENTAL OPTIONS",
+    "title": "Choose a rental for your travel dates.",
+    "vehicleId": "toyota-prius",
+    "image": "/routes/coastal-stay.webp",
+    "imageAlt": "A hybrid rental car beside a tropical coastal holiday stay",
+    "hub": "By arrangement"
   },
   {
-    num: "05",
-    route: "ISLAND-WIDE FAMILY & GROUP TOURS",
-    distanceKm: "9 TO 12 PASSENGERS",
-    tag: "SELF-DRIVE OR CHAUFFEUR",
-    title: "Bring the Whole Family Together",
-    subtitle:
-      "High-roof cabin with individual rear A/C vents, reclining plush seats, and optional experienced English-speaking local driver.",
-    vehicle: FLEET_VEHICLES[5], // Toyota KDH Van
-    hub: "Colombo",
-    image:
-      "https://images.unsplash.com/photo-1519641471654-76ce0107ad1b?auto=format&fit=crop&w=1400&q=85",
-  },
+    "num": "05",
+    "route": "FAMILY & GROUP JOURNEYS",
+    "distanceKm": "VAN RENTALS",
+    "tag": "NISSAN NV200",
+    "title": "Ask about a van for your journey.",
+    "vehicleId": "nissan-nv200",
+    "image": "/routes/family-journey.webp",
+    "imageAlt": "A family beside a passenger van at a scenic Sri Lankan stop",
+    "hub": "By arrangement"
+  }
 ];
 
-export default function HorizontalScrollSection({
-  onSelectVehicleForBooking,
-}: HorizontalScrollSectionProps) {
+export default function HorizontalScrollSection() {
+  const { fleet } = useSiteContent();
+  const cards = HORIZONTAL_CARDS.map(card => ({ ...card,
+    vehicle: fleet.find(vehicle => vehicle.id === card.vehicleId) ?? fleet[0],
+  }));
   const sectionRef = useRef<HTMLElement>(null);
-  const [progressPct, setProgressPct] = useState(0);
-  const [odometerKm, setOdometerKm] = useState(0);
+  const viewportRef = useRef<HTMLDivElement>(null);
+  const trackRef = useRef<HTMLDivElement>(null);
+  const [travel, setTravel] = useState(0);
+
+  useEffect(() => {
+    const viewport = viewportRef.current;
+    const track = trackRef.current;
+    if (!viewport || !track) return;
+    const measure = () => setTravel(Math.max(0, track.scrollWidth - viewport.clientWidth));
+    const observer = new ResizeObserver(measure);
+    observer.observe(viewport);
+    observer.observe(track);
+    measure();
+    return () => observer.disconnect();
+  }, []);
 
   const { scrollYProgress } = useScroll({
     target: sectionRef,
@@ -104,8 +107,9 @@ export default function HorizontalScrollSection({
     restDelta: 0.0005,
   });
 
-  // Translate the horizontal track from 0% to -78% as user scrolls vertically
-  const xTranslate = useTransform(smoothProgress, [0, 1], ["0%", "-78%"]);
+  // Stop with the final card at the right gutter, then release the sticky stage.
+  // Direct progress keeps the track from trailing behind the vertical handoff.
+  const xTranslate = useTransform(scrollYProgress, [0, 1], [0, -travel]);
 
   // Counter-moving giant background watermark text
   const bgTextX = useTransform(smoothProgress, [0, 1], ["5%", "-45%"]);
@@ -122,17 +126,15 @@ export default function HorizontalScrollSection({
   const rawSkew = useTransform(scrollVelocity, [-0.8, 0, 0.8], [5, 0, -5]);
   const skewX = useSpring(rawSkew, { stiffness: 220, damping: 28 });
 
-  useMotionValueEvent(scrollYProgress, "change", (v) => {
-    const clamped = Math.max(0, Math.min(1, v));
-    setProgressPct(Math.round(clamped * 100));
-    setOdometerKm(Math.round(clamped * 485));
-  });
+  const progressPct = useTransform(scrollYProgress, value => `${String(Math.round(Math.max(0, Math.min(1, value)) * 100)).padStart(3, "0")}%`);
+  const odometerKm = useTransform(scrollYProgress, value => `${String(Math.round(Math.max(0, Math.min(1, value)) * 485)).padStart(3, "0")} KM`);
 
   return (
     <section
       id="island-routes"
       ref={sectionRef}
-      className="relative h-[440vh] bg-[#050505] border-t border-white/10"
+      style={{ height: `calc(100vh + ${travel}px)` }}
+      className="relative bg-[#050505] border-t border-white/10"
     >
       {/* Sticky Full-Screen Viewport that Hijacks Vertical Scroll into Horizontal Motion */}
       <div className="sticky top-0 h-screen w-full overflow-hidden flex flex-col justify-between py-10 sm:py-14">
@@ -162,25 +164,22 @@ export default function HorizontalScrollSection({
           <div className="flex items-center gap-6 font-mono text-xs uppercase tracking-[0.2em]">
             <div className="flex items-center gap-2">
               <span className="text-neutral-500">DISTANCE:</span>
-              <span className="text-white font-bold tabular-nums">
-                {String(odometerKm).padStart(3, "0")} KM
-              </span>
+              <motion.span className="text-white font-bold tabular-nums">{odometerKm}</motion.span>
             </div>
             <div className="h-3 w-[1px] bg-white/20" />
             <div className="flex items-center gap-2">
               <span className="text-neutral-500">REEL:</span>
-              <span className="text-[#FF5500] font-bold tabular-nums">
-                {String(progressPct).padStart(3, "0")}%
-              </span>
+              <motion.span className="text-[#FF5500] font-bold tabular-nums">{progressPct}</motion.span>
             </div>
           </div>
         </div>
 
         {/* Main Horizontal Sliding Track */}
-        <div className="relative z-10 flex items-center flex-1 overflow-visible my-4">
+        <div ref={viewportRef} className="relative z-10 flex items-center flex-1 overflow-visible my-4">
           <motion.div
+            ref={trackRef}
             style={{ x: xTranslate, skewX }}
-            className="flex items-stretch gap-8 sm:gap-12 pl-6 sm:pl-16 pr-24 w-max"
+            className="flex items-stretch gap-8 sm:gap-12 px-6 sm:px-16 w-max"
           >
             {/* ===============================================================
                 INTRO TITLE PANEL (PANEL 00)
@@ -216,22 +215,24 @@ export default function HorizontalScrollSection({
             {/* ===============================================================
                 ROUTE & VEHICLE HORIZONTAL CARDS (PANELS 01 - 05)
             =============================================================== */}
-            {HORIZONTAL_CARDS.map((card) => (
-              <div
+            {cards.map((card) => (
+              <WhatsAppLink
                 key={card.num}
-                onClick={() =>
-                  onSelectVehicleForBooking(card.vehicle, card.hub)
-                }
-                data-cursor="BOOK"
+                vehicle={card.vehicle}
+                hub={card.hub}
+                inquiry={`Trip: ${card.route}`}
+                aria-label={`Plan ${card.route} with ${card.vehicle.name} on WhatsApp`}
+                data-cursor="CHAT"
                 className="group cursor-pointer w-[88vw] sm:w-[600px] lg:w-[680px] shrink-0 bg-[#0B0B0B] border border-white/15 hover:border-[#FF5500] transition-colors duration-300 grid grid-cols-1 md:grid-cols-12 overflow-hidden"
               >
                 {/* Left Image Column with Internal Horizontal Pan Parallax */}
                 <div className="md:col-span-6 relative min-h-[240px] md:min-h-[420px] overflow-hidden bg-black">
                   <motion.img
-                    src={card.image}
-                    alt={card.title}
+                    {...responsiveImage(card.image, "(min-width: 768px) 340px, 88vw")}
+                    loading="lazy" decoding="async"
+                    alt={card.imageAlt}
                     style={{ objectPosition: imgObjectPos }}
-                    className="w-full h-full object-cover scale-110 group-hover:scale-125 transition-transform duration-700"
+                    className="w-full h-full object-cover transition-transform duration-700"
                   />
                   <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/20 to-transparent" />
 
@@ -251,13 +252,13 @@ export default function HorizontalScrollSection({
                       </span>
                     </div>
                     <span className="font-mono text-xs font-bold text-[#FF5500] bg-black/80 px-2.5 py-1 border border-[#FF5500]/40">
-                      Rs. {card.vehicle.pricePerDay.toLocaleString()}/d
+                      {formatDailyRate(card.vehicle.pricePerDay)}
                     </span>
                   </div>
                 </div>
 
                 {/* Right Editorial Specs Column */}
-                <div className="md:col-span-6 p-7 sm:p-9 flex flex-col justify-between">
+                <div className="md:col-span-6 min-w-0 p-7 sm:p-9 flex flex-col justify-between">
                   <div>
                     <div className="flex items-center justify-between font-mono text-xs text-neutral-400 mb-4 pb-3 border-b border-white/10">
                       <span className="text-[#FF5500] font-bold">
@@ -275,56 +276,54 @@ export default function HorizontalScrollSection({
                     </h3>
 
                     <p className="text-neutral-400 text-sm leading-relaxed">
-                      {card.subtitle}
+                      {card.vehicle.tagline}
                     </p>
                   </div>
 
                   {/* Practical Vehicle Specs Pill Strip */}
                   <div className="pt-6 mt-6 border-t border-white/10 space-y-4">
-                    <div className="grid grid-cols-3 gap-2 text-center">
-                      <div className="p-2 bg-white/[0.03] border border-white/10">
+                    <div className="grid grid-cols-[minmax(0,1fr)_minmax(0,1fr)_minmax(0,1.5fr)] gap-2 text-center">
+                      <div className="min-w-0 p-2 bg-white/[0.03] border border-white/10">
                         <span className="block font-mono text-[9px] text-neutral-500 uppercase">
                           ECONOMY
                         </span>
-                        <span className="font-mono text-xs font-bold text-white">
+                        <span className="block font-mono text-xs font-bold text-white [overflow-wrap:anywhere]">
                           {card.vehicle.fuelEconomy}
                         </span>
                       </div>
-                      <div className="p-2 bg-white/[0.03] border border-white/10">
+                      <div className="min-w-0 p-2 bg-white/[0.03] border border-white/10">
                         <span className="block font-mono text-[9px] text-neutral-500 uppercase">
                           SEATS
                         </span>
-                        <span className="font-mono text-xs font-bold text-white">
-                          {card.vehicle.seats}
+                        <span className="block font-mono text-xs font-bold text-white [overflow-wrap:anywhere]">
+                          {card.vehicle.seats ?? "Ask us"}
                         </span>
                       </div>
-                      <div className="p-2 bg-white/[0.03] border border-white/10">
+                      <div className="min-w-0 p-2 bg-white/[0.03] border border-white/10">
                         <span className="block font-mono text-[9px] text-neutral-500 uppercase">
                           PICKUP
                         </span>
-                        <span className="font-mono text-xs font-bold text-[#FF5500] truncate">
+                        <span className="block font-mono text-[11px] font-bold text-[#FF5500] [overflow-wrap:anywhere]">
                           {card.hub}
                         </span>
                       </div>
                     </div>
 
                     <div className="flex items-center justify-between font-mono text-xs uppercase tracking-[0.18em] text-white group-hover:text-[#FF5500] transition-colors pt-1">
-                      <span>[ Reserve For This Route ]</span>
+                      <span>[ Plan on WhatsApp ]</span>
                       <ArrowUpRight className="w-4 h-4 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform" />
                     </div>
                   </div>
                 </div>
-              </div>
+              </WhatsAppLink>
             ))}
 
             {/* ===============================================================
                 OUTRO ORANGE HIGH-IMPACT CTA CARD (PANEL 06)
             =============================================================== */}
-            <div
-              onClick={() =>
-                onSelectVehicleForBooking(FLEET_VEHICLES[1], "Colombo")
-              }
-              data-cursor="RESERVE"
+            <WhatsAppLink
+              inquiry="I'd like help planning a custom trip and vehicle delivery."
+              data-cursor="CHAT"
               className="w-[85vw] sm:w-[480px] shrink-0 bg-[#FF5500] text-black p-8 sm:p-12 flex flex-col justify-between cursor-pointer group relative overflow-hidden"
             >
               <div className="flex items-center justify-between font-mono text-xs font-bold uppercase tracking-[0.2em]">
@@ -337,19 +336,19 @@ export default function HorizontalScrollSection({
                   Need Delivery Anywhere Else in Sri Lanka?
                 </h3>
                 <p className="text-black/80 text-base font-medium leading-relaxed">
-                  We deliver vehicles to hotels, homes, and train stations
-                  across Colombo, Negombo, Kandy, Galle, and Ella—with or
-                  without a driver.
+                  Tell us your travel plans and preferred handover point.
+                  Our team will help you arrange the right vehicle, delivery,
+                  and return for your journey.
                 </p>
               </div>
 
               <div className="pt-6 border-t border-black/20 flex items-center justify-between font-mono text-xs font-bold uppercase tracking-[0.2em]">
                 <span className="px-5 py-3 bg-black text-white group-hover:bg-white group-hover:text-black transition-colors">
-                  <RollText>[ Start Custom Booking ]</RollText>
+                  <RollText>[ Chat on WhatsApp ]</RollText>
                 </span>
                 <span className="text-2xl">↗</span>
               </div>
-            </div>
+            </WhatsAppLink>
           </motion.div>
         </div>
 

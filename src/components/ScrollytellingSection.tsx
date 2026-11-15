@@ -1,6 +1,11 @@
 "use client";
 
+import OptimizedImage from "@/components/OptimizedImage";
+import { createGaugeTicks } from "@/lib/gauge";
 import React, { useRef, useState, useEffect } from "react";
+import WhatsAppLink from "./WhatsAppLink";
+import { useSiteContent } from "./SiteContentProvider";
+import { DEFAULT_ABOUT_IMAGES } from "@/data/aboutImages";
 import {
   motion,
   useScroll,
@@ -8,6 +13,7 @@ import {
   useSpring,
   useInView,
   useMotionValueEvent,
+  useMotionValue,
 } from "framer-motion";
 import {
   ScrambleText,
@@ -16,101 +22,76 @@ import {
   RollText,
 } from "./AnimatedText";
 
-const MOSAIC_IMAGES = [
-  "https://images.unsplash.com/photo-1549317661-bd32c8ce0db2?auto=format&fit=crop&w=900&q=80",
-  "https://images.unsplash.com/photo-1621007947382-bb3c3994e3fb?auto=format&fit=crop&w=900&q=80",
-  "https://images.unsplash.com/photo-1533473359331-0135ef1b58bf?auto=format&fit=crop&w=900&q=80",
-  "https://images.unsplash.com/photo-1568844293986-8d0400bd4745?auto=format&fit=crop&w=900&q=80",
-  "https://images.unsplash.com/photo-1590362891991-f776e747a588?auto=format&fit=crop&w=900&q=80",
-  "https://images.unsplash.com/photo-1519641471654-76ce0107ad1b?auto=format&fit=crop&w=900&q=80",
-  "https://images.unsplash.com/photo-1449965408869-eaa3f722e40d?auto=format&fit=crop&w=900&q=80",
-  "https://images.unsplash.com/photo-1469854523086-cc02fe5d8800?auto=format&fit=crop&w=900&q=80",
-];
+const SHOW_EXPLORE_SRI_LANKA = false;
 
 const DISCIPLINES = [
   {
-    num: "01",
-    title: "Self-Drive Car Rentals",
-    desc: "Clean, well-maintained hybrids, sedans, and SUVs for daily errands or island-wide trips.",
-    image:
-      "https://images.unsplash.com/photo-1549317661-bd32c8ce0db2?auto=format&fit=crop&w=1400&q=85",
+    "num": "01",
+    "title": "Rental Cars & Hybrids",
+    "desc": "Choose from Toyota, Honda, Suzuki, and Nissan models. Ask our team for availability and a quote.",
+    "image": "/services/rental-cars.webp"
   },
   {
-    num: "02",
-    title: "Katunayake Airport Pickup",
-    desc: "Step out of BIA arrivals and straight into your waiting car—available 24 hours a day.",
-    image:
-      "https://images.unsplash.com/photo-1621007947382-bb3c3994e3fb?auto=format&fit=crop&w=1400&q=85",
+    "num": "02",
+    "title": "Airport Pickup & Return",
+    "desc": "Arrange your vehicle handover at the airport for arrival and departure.",
+    "image": "/services/airport-handover.webp"
   },
   {
-    num: "03",
-    title: "With-Driver (Chauffeur) Tours",
-    desc: "Friendly, English-speaking local drivers who know every route from Sigiriya to Mirissa.",
-    image:
-      "https://images.unsplash.com/photo-1519641471654-76ce0107ad1b?auto=format&fit=crop&w=1400&q=85",
+    "num": "03",
+    "title": "Luxury Wedding Cars",
+    "desc": "Make your special day memorable. Ask about the available cars and wedding packages.",
+    "image": "/services/wedding-cars.webp"
   },
   {
-    num: "04",
-    title: "Doorstep Home & Hotel Delivery",
-    desc: "We deliver your vehicle directly to your home in Colombo, Kandy, or Galle within 30 minutes.",
-    image:
-      "https://images.unsplash.com/photo-1533473359331-0135ef1b58bf?auto=format&fit=crop&w=1400&q=85",
+    "num": "04",
+    "title": "Rent a Car Insurance",
+    "desc": "Ask about rental insurance, including the coverage and conditions for your chosen vehicle.",
+    "image": "/services/rental-insurance.webp"
   },
   {
-    num: "05",
-    title: "Long-Term & Corporate Plans",
-    desc: "Discounted weekly and monthly packages with full servicing and replacement vehicle backup.",
-    image:
-      "https://images.unsplash.com/photo-1590362891991-f776e747a588?auto=format&fit=crop&w=1400&q=85",
+    "num": "05",
+    "title": "Short- & Long-Term Rentals",
+    "desc": "Arrange a rental for a quick visit or a longer stay in Sri Lanka.",
+    "image": "/services/flexible-rentals.webp"
   },
   {
-    num: "06",
-    title: "24/7 Island-Wide Roadside Help",
-    desc: "Complete peace of mind with full insurance and round-the-clock support anywhere in Sri Lanka.",
-    image:
-      "https://images.unsplash.com/photo-1568844293986-8d0400bd4745?auto=format&fit=crop&w=1400&q=85",
-  },
+    "num": "06",
+    "title": "24/7 Customer Support",
+    "desc": "Contact our team around the clock before or during your rental.",
+    "image": "/services/customer-support.webp"
+  }
 ];
 
 const PROCESS_STEPS = [
   {
     step: "Step 01",
     title: "Pick Your Car",
-    desc: "Choose from fuel-saving Wagon R hybrids, family sedans, SUVs, or KDH vans.",
+    desc: "Explore our Wagon R, Toyota sedans and hybrids, Honda crossovers, and Nissan NV200.",
   },
   {
     step: "Step 02",
-    title: "Choose Dates",
-    desc: "Select self-drive or with-driver, plus your pickup location in Colombo, BIA, or outstation.",
+    title: "Message Us on WhatsApp",
+    desc: "Send your dates, preferred vehicle, pickup and return locations, and any special requests to our team.",
   },
   {
     step: "Step 03",
-    title: "Quick Verification",
-    desc: "Simple NIC / Passport and driving license check—no complicated paperwork or delays.",
+    title: "Confirm with Our Team",
+    desc: "We check availability, share your final quote, and confirm the rental terms and required documents on WhatsApp.",
   },
   {
     step: "Step 04",
     title: "Fast Handover",
-    desc: "Pick up from our branch or have the vehicle delivered clean and fueled to your doorstep.",
+    desc: "Meet our team at the airport or your agreed delivery point for your clean, inspected vehicle.",
   },
   {
     step: "Step 05",
     title: "Hit the Road",
-    desc: "Enjoy Sri Lanka with 24/7 roadside support and easy drop-off when your trip is done.",
+    desc: "Enjoy Sri Lanka with 24/7 customer support, then return your vehicle at the airport or agreed location.",
   },
 ];
 
-const GAUGE_TICKS = Array.from({ length: 30 }, (_, i) => {
-  const startAngle = 135;
-  const endAngle = 405;
-  const angleDeg = startAngle + (i / 29) * (endAngle - startAngle);
-  const rad = (angleDeg * Math.PI) / 180;
-  const x1 = 100 + Math.cos(rad) * 78;
-  const y1 = 100 + Math.sin(rad) * 78;
-  const x2 = 100 + Math.cos(rad) * 94;
-  const y2 = 100 + Math.sin(rad) * 94;
-  return { x1, y1, x2, y2 };
-});
+const GAUGE_TICKS = createGaugeTicks();
 
 function AnimatedStat({
   target,
@@ -159,27 +140,27 @@ function TiltVaultTile({
   image,
   title,
   tag,
-  colSpan,
-  aspect,
+  imageFit = "contain",
 }: {
   image: string;
   title: string;
   tag: string;
-  colSpan: string;
-  aspect: string;
+  imageFit?: "cover" | "contain";
 }) {
   const tileRef = useRef<HTMLDivElement>(null);
-  const [tilt, setTilt] = useState({ rx: 0, ry: 0 });
+  const rotateX = useMotionValue(0);
+  const rotateY = useMotionValue(0);
 
   const handleMove = (e: React.MouseEvent<HTMLDivElement>) => {
     if (!tileRef.current) return;
     const rect = tileRef.current.getBoundingClientRect();
     const x = (e.clientX - rect.left) / rect.width - 0.5;
     const y = (e.clientY - rect.top) / rect.height - 0.5;
-    setTilt({ rx: -y * 12, ry: x * 12 });
+    rotateX.set(-y * 12);
+    rotateY.set(x * 12);
   };
 
-  const handleLeave = () => setTilt({ rx: 0, ry: 0 });
+  const handleLeave = () => { rotateX.set(0); rotateY.set(0); };
 
   return (
     <motion.div
@@ -191,20 +172,25 @@ function TiltVaultTile({
       viewport={{ once: true, amount: 0.2 }}
       transition={{ duration: 0.7 }}
       style={{
-        transform: `perspective(1000px) rotateX(${tilt.rx}deg) rotateY(${tilt.ry}deg)`,
+        transformPerspective: 1000,
+        rotateX,
+        rotateY,
         transition: "transform 0.18s ease-out",
       }}
       data-cursor="VIEW"
-      className={`${colSpan} ${aspect} group relative overflow-hidden bg-[#0D0D0D] border border-white/10 cursor-pointer`}
+      className="group min-w-0 h-full flex flex-col overflow-hidden bg-[#0D0D0D] border border-white/10"
     >
-      <img
-        src={image}
-        alt={title}
-        className="w-full h-full object-cover scale-105 group-hover:scale-115 transition-transform duration-700 ease-out"
-      />
-      <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/15 to-transparent opacity-80 group-hover:opacity-95 transition-opacity" />
-      <div className="absolute bottom-6 left-6 right-6 flex items-end justify-between">
-        <div>
+      <div className="relative aspect-[4/3] w-full shrink-0 overflow-hidden bg-black/40">
+        <OptimizedImage
+          src={image}
+          sizes="(min-width: 768px) 50vw, 100vw"
+          alt={title}
+          loading="lazy"
+          className={`absolute inset-0 w-full h-full ${imageFit === "contain" ? "object-contain" : "object-cover"} object-center`}
+        />
+      </div>
+      <div className="flex flex-1 items-center gap-4 border-t border-white/10 p-5 sm:p-6">
+        <div className="min-w-0">
           <span className="font-mono text-[10px] uppercase tracking-[0.2em] text-[#FF5500] block mb-1">
             {tag}
           </span>
@@ -212,19 +198,14 @@ function TiltVaultTile({
             {title}
           </h4>
         </div>
-        <span className="w-9 h-9 rounded-full border border-white/25 flex items-center justify-center text-white group-hover:bg-[#FF5500] group-hover:border-[#FF5500] group-hover:text-black transition-all">
-          ↗
-        </span>
       </div>
     </motion.div>
   );
 }
 
-export default function ScrollytellingSection({
-  onOpenBooking,
-}: {
-  onOpenBooking: () => void;
-}) {
+export default function ScrollytellingSection() {
+  const { settings, fleet } = useSiteContent();
+  const aboutImages = settings.aboutImages ?? DEFAULT_ABOUT_IMAGES;
   // 1. Scroll-Linked Mosaic Carousel Track
   const aboutRef = useRef<HTMLElement>(null);
   const { scrollYProgress: aboutScroll } = useScroll({
@@ -287,7 +268,7 @@ export default function ScrollytellingSection({
             </p>
             <div className="flex justify-center mb-6">
               <RollingHeading
-                text="Simple, reliable car rental for every road in Sri Lanka."
+                text={settings.aboutTitle}
                 highlightWords={["every", "road", "Sri", "Lanka."]}
                 className="font-display font-black text-4xl sm:text-6xl lg:text-7xl tracking-tight leading-[1.03] justify-center"
               />
@@ -299,10 +280,7 @@ export default function ScrollytellingSection({
               transition={{ duration: 0.6 }}
               className="text-neutral-400 text-lg sm:text-xl font-light max-w-2xl mx-auto leading-relaxed"
             >
-              Whether you need a fuel-efficient hybrid for Colombo city runs, an
-              SUV for Kandy &amp; Ella hill climbs, or a spacious KDH van for a
-              family trip down south, Flexi Rental has the right vehicle ready
-              for you.
+              {settings.aboutDescription}
             </motion.p>
           </header>
         </div>
@@ -315,9 +293,9 @@ export default function ScrollytellingSection({
           >
             {[0, 1, 2, 3, 4, 5, 6, 7].map((panelIdx) => {
               const isDouble = panelIdx % 2 === 0;
-              const img1 = MOSAIC_IMAGES[panelIdx % MOSAIC_IMAGES.length];
+              const img1 = aboutImages[panelIdx % aboutImages.length];
               const img2 =
-                MOSAIC_IMAGES[(panelIdx + 3) % MOSAIC_IMAGES.length];
+                aboutImages[(panelIdx + 3) % aboutImages.length];
 
               return (
                 <div
@@ -327,15 +305,15 @@ export default function ScrollytellingSection({
                   {isDouble ? (
                     <>
                       <div className="relative h-[180px] sm:h-[220px] overflow-hidden bg-[#111] border border-white/10 group">
-                        <img
-                          src={img1}
+                        <OptimizedImage
+                          src={img1} sizes="290px"
                           alt=""
                           className="w-full h-full object-cover grayscale hover:grayscale-0 transition-all duration-700 scale-105 group-hover:scale-110"
                         />
                       </div>
                       <div className="relative h-[180px] sm:h-[220px] overflow-hidden bg-[#111] border border-white/10 group">
-                        <img
-                          src={img2}
+                        <OptimizedImage
+                          src={img2} sizes="290px"
                           alt=""
                           className="w-full h-full object-cover transition-transform duration-700 scale-105 group-hover:scale-110"
                         />
@@ -343,8 +321,8 @@ export default function ScrollytellingSection({
                     </>
                   ) : (
                     <div className="relative h-[384px] sm:h-[464px] overflow-hidden bg-[#111] border border-[#FF5500]/40 group">
-                      <img
-                        src={img1}
+                      <OptimizedImage
+                        src={img1} sizes="290px"
                         alt=""
                         className="w-full h-full object-cover transition-transform duration-700 scale-105 group-hover:scale-110"
                       />
@@ -365,19 +343,18 @@ export default function ScrollytellingSection({
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center mb-24">
             <div className="lg:col-span-6 space-y-6">
               <p className="font-display text-2xl sm:text-4xl text-white leading-[1.25] font-bold">
-                Every vehicle in our fleet is serviced, sanitized, and inspected
-                before every handover—so you can drive anywhere on the island
-                with zero stress.
+                Choose a clean, comfortable rental for your stay in Sri Lanka,
+                with airport pickup and return and support available 24/7.
               </p>
               <div className="h-[2px] w-24 bg-[#FF5500]" />
             </div>
 
             <div className="lg:col-span-6 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-8">
               <p className="text-neutral-400 text-base leading-relaxed max-w-md">
-                Honest Sri Lankan Rupee rates. No hidden charges. Self-drive or
-                with an experienced local driver. Our goal? Making every trip{" "}
+                Share your dates and preferred vehicle with our team. We will
+                confirm availability, your quote, and rental terms so you can{" "}
                 <span className="text-[#FF5500] font-medium">
-                  smooth, affordable, and memorable.
+                  plan your journey with confidence.
                 </span>
               </p>
 
@@ -416,10 +393,10 @@ export default function ScrollytellingSection({
 
           {/* 4 Animated Count-Up Stats */}
           <dl className="grid grid-cols-2 lg:grid-cols-4 gap-8">
-            <AnimatedStat target={150} suffix="+" label="Vehicles in Fleet" />
-            <AnimatedStat target={15} suffix="k+" label="Happy Customers" />
-            <AnimatedStat target={24} suffix="/7" label="Roadside Support" />
-            <AnimatedStat target={6} suffix="+" label="Island-Wide Hubs" />
+            <AnimatedStat target={fleet.length} suffix="" label="Vehicles to Explore" />
+            <AnimatedStat target={24} suffix="/7" label="Customer Support" />
+            <AnimatedStat target={2} suffix="" label="Airport Delivery & Return" />
+            <AnimatedStat target={100} suffix="%" label="Cleaned Before Handover" />
           </dl>
         </div>
       </section>
@@ -503,8 +480,8 @@ export default function ScrollytellingSection({
                         }}
                         className="absolute inset-0"
                       >
-                        <img
-                          src={item.image}
+                        <OptimizedImage
+                          src={item.image} sizes="480px"
                           alt={item.title}
                           className="w-full h-full object-cover"
                         />
@@ -547,8 +524,8 @@ export default function ScrollytellingSection({
                 className="font-display font-black text-4xl sm:text-6xl tracking-tight mb-4"
               />
               <p className="text-neutral-400 text-base sm:text-lg font-light max-w-xl">
-                Five simple steps, zero hassle. Book online in minutes and pick
-                up your vehicle at the airport, our branch, or your doorstep.
+                Choose your vehicle, arrange your booking on WhatsApp, and pick
+                up and return at the airport or an agreed handover point.
               </p>
             </header>
 
@@ -623,7 +600,7 @@ export default function ScrollytellingSection({
       {/* ===================================================================
           SECTION 4: (THE GALLERY) — 3D MOUSE-TILT ASYMMETRICAL COLLAGE
       =================================================================== */}
-      <section
+      {SHOW_EXPLORE_SRI_LANKA && <section
         id="vault"
         className="relative py-32 sm:py-44 border-t border-white/10 bg-[#050505]"
       >
@@ -644,47 +621,39 @@ export default function ScrollytellingSection({
               </p>
             </div>
 
-            <button
-              onClick={onOpenBooking}
+            <WhatsAppLink
               className="self-start lg:self-end px-7 py-3.5 border border-[#FF5500] text-[#FF5500] hover:bg-[#FF5500] hover:text-black font-mono text-xs font-bold uppercase tracking-[0.2em] transition-all"
             >
-              <RollText>[ Book Your Ride ]</RollText>
-            </button>
+              <RollText>[ Book on WhatsApp ]</RollText>
+            </WhatsAppLink>
           </div>
 
-          {/* 12-Column Asymmetrical 3D-Tilt Collage Grid */}
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
+          {/* Matching image frames and aligned captions */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 items-stretch">
             <TiltVaultTile
-              colSpan="lg:col-span-7"
-              aspect="aspect-[4/3]"
-              image="https://images.unsplash.com/photo-1549317661-bd32c8ce0db2?auto=format&fit=crop&w=1400&q=85"
-              tag="COLOMBO CITY // DAILY HYBRID"
+              image="/posts/suzuki-wagon-r.png"
+              tag="COMPACT RENTAL OPTIONS"
               title="Suzuki Wagon R — Effortless City Driving"
             />
             <TiltVaultTile
-              colSpan="lg:col-span-5"
-              aspect="aspect-[3/4]"
-              image="https://images.unsplash.com/photo-1533473359331-0135ef1b58bf?auto=format&fit=crop&w=1200&q=85"
+              imageFit="cover"
+              image="/posts/vezel-photo.png"
               tag="ELLA & NUWARA ELIYA // HILL COUNTRY"
-              title="Toyota Raize Turbo — Highland Ready"
+              title="Honda Vezel"
             />
             <TiltVaultTile
-              colSpan="lg:col-span-4"
-              aspect="aspect-square"
-              image="https://images.unsplash.com/photo-1519641471654-76ce0107ad1b?auto=format&fit=crop&w=1200&q=85"
-              tag="FAMILY & GROUP TOURS // 9 SEATS"
-              title="Toyota KDH High-Roof Van"
+              image="/posts/nissan-nv200.png"
+              tag="VAN RENTAL ENQUIRIES"
+              title="Nissan NV200"
             />
             <TiltVaultTile
-              colSpan="lg:col-span-8"
-              aspect="aspect-[2/1]"
-              image="https://images.unsplash.com/photo-1621007947382-bb3c3994e3fb?auto=format&fit=crop&w=1400&q=85"
-              tag="KATUNAYAKE BIA // 24/7 AIRPORT PICKUP"
-              title="Toyota Axio Hybrid — Ready at Arrivals"
+              image="/posts/toyota-axio.png"
+              tag="AIRPORT PICKUP & RETURN"
+              title="Toyota Axio — Airport Pickup & Return"
             />
           </div>
         </div>
-      </section>
+      </section>}
     </div>
   );
 }

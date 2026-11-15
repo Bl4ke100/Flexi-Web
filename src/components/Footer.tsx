@@ -3,12 +3,11 @@
 import React from "react";
 import { motion } from "framer-motion";
 import { FourPointStar, RollText, ScrambleText } from "./AnimatedText";
+import WhatsAppLink from "./WhatsAppLink";
+import { useSiteContent } from "./SiteContentProvider";
 
-export default function Footer({
-  onOpenBooking,
-}: {
-  onOpenBooking: () => void;
-}) {
+export default function Footer() {
+  const { settings } = useSiteContent();
   return (
     <div className="bg-[#050505] text-white overflow-hidden">
       {/* ===================================================================
@@ -55,22 +54,21 @@ export default function Footer({
           >
             <div>
               <span className="font-mono text-[10px] uppercase tracking-[0.2em] text-[#FF5500] block mb-2">
-                01 // SELF-DRIVE OR WITH DRIVER
+                01 // SHORT &amp; LONG STAYS
               </span>
               <h3 className="font-display font-bold text-2xl sm:text-3xl text-white mb-3">
-                Book Your Vehicle
+                Book on WhatsApp
               </h3>
               <p className="text-sm text-neutral-400 leading-relaxed">
-                Pick up at Katunayake BIA Airport or get doorstep delivery in
-                Colombo, Kandy, Galle, Negombo, and Ella.
+                Send us your preferred vehicle, dates, and pickup location on
+                WhatsApp. Our team will confirm availability and your quote.
               </p>
             </div>
-            <button
-              onClick={onOpenBooking}
+            <WhatsAppLink
               className="self-start px-6 py-3.5 bg-[#FF5500] hover:bg-white text-black font-mono text-xs font-bold uppercase tracking-[0.2em] transition-colors"
             >
-              <RollText>[ Book Now ]</RollText>
-            </button>
+              <RollText>[ Chat on WhatsApp ]</RollText>
+            </WhatsAppLink>
           </motion.div>
 
           <motion.div
@@ -82,22 +80,22 @@ export default function Footer({
           >
             <div>
               <span className="font-mono text-[10px] uppercase tracking-[0.2em] text-[#FF5500] block mb-2">
-                02 // LONG-TERM &amp; CORPORATE
+                02 // LONG-TERM RENTALS
               </span>
               <h3 className="font-display font-bold text-2xl sm:text-3xl text-white mb-3">
                 Monthly Packages
               </h3>
               <p className="text-sm text-neutral-400 leading-relaxed">
-                Save up to 20% on weekly and monthly rentals with full
-                maintenance, insurance, and 24/7 roadside backup included.
+                Planning a longer stay? Message our team for long-term rates,
+                vehicle options, and rental terms.
               </p>
             </div>
-            <button
-              onClick={onOpenBooking}
+            <WhatsAppLink
+              inquiry="I'm interested in weekly or monthly rental packages."
               className="self-start px-6 py-3.5 border border-white/25 hover:border-[#FF5500] text-white hover:text-[#FF5500] font-mono text-xs font-bold uppercase tracking-[0.2em] transition-colors"
             >
-              <RollText>[ Get Monthly Rate ]</RollText>
-            </button>
+              <RollText>[ Ask for Monthly Rates ]</RollText>
+            </WhatsAppLink>
           </motion.div>
         </div>
       </section>
@@ -121,13 +119,12 @@ export default function Footer({
               <a href="#hero" className="flex items-center gap-2.5 mb-4">
                 <FourPointStar className="w-5 h-5 text-[#FF5500]" />
                 <span className="font-display font-black text-2xl tracking-tight">
-                  FLEXI <span className="text-[#FF5500]">RENTAL</span>
+                  {settings.companyName.split(" ")[0]} <span className="text-[#FF5500]">{settings.companyName.split(" ").slice(1).join(" ")}</span>
                 </span>
               </a>
               <p className="text-xs text-neutral-500 leading-relaxed max-w-xs">
-                Sri Lanka&apos;s trusted everyday car, SUV, and van rental
-                service. Clean vehicles, honest LKR rates, and 24/7 island-wide
-                support.
+                Cars, hybrids, SUVs, vans, and luxury wedding rentals in Sri Lanka.
+                Airport pickup and return, with 24/7 customer support.
               </p>
             </div>
 
@@ -157,52 +154,58 @@ export default function Footer({
                   </a>
                 </li>
                 <li>
-                  <a href="#pricing-lab" className="hover:text-[#FF5500] transition-colors">
-                    <RollText>Rate Calculator</RollText>
-                  </a>
+                  <WhatsAppLink className="hover:text-[#FF5500] transition-colors">
+                    <RollText>Book on WhatsApp</RollText>
+                  </WhatsAppLink>
                 </li>
               </ul>
             </div>
 
             <div>
               <h4 className="font-mono text-xs uppercase tracking-[0.2em] text-neutral-500 mb-4">
-                Sri Lanka Branches
+                Your Rental, Made Easy
               </h4>
               <ul className="flex flex-col gap-2.5 font-mono text-xs uppercase tracking-wider text-neutral-300">
-                <li>Colombo // Rajagiriya &amp; City</li>
-                <li>Katunayake // BIA Airport 24/7</li>
-                <li>Kandy // Peradeniya Road</li>
-                <li>Galle // Fort &amp; Unawatuna</li>
-                <li>Negombo // Beach Road</li>
-                <li>Ella // Hill Country Hub</li>
+                <li>Airport vehicle delivery</li>
+                <li>Return your vehicle at the airport</li>
+                <li>24/7 customer support</li>
+                <li>Clean, well-maintained vehicles</li>
+                <li>Short- and long-term rentals</li>
+                <li>Luxury wedding cars</li>
+                <li>Rental insurance: ask for details</li>
+                <li><a href="#deals" className="hover:text-[#FF5500] transition-colors">Explore deals &amp; offers</a></li>
               </ul>
             </div>
 
             <div className="lg:text-right">
               <h4 className="font-mono text-xs uppercase tracking-[0.2em] text-neutral-500 mb-4">
-                24/7 Booking Desk
+                WhatsApp Booking Desk
               </h4>
               <p className="font-mono text-xs text-neutral-400 mb-4">
-                Hotline: +94 11 234 5678
-                <br />
-                WhatsApp: +94 77 123 4567
+                <WhatsAppLink className="hover:text-[#FF5500] transition-colors">
+                  +{settings.whatsappNumber}
+                </WhatsAppLink>
               </p>
-              <button
-                onClick={onOpenBooking}
-                className="px-6 py-3 bg-[#FF5500] text-black font-mono text-xs font-bold uppercase tracking-[0.2em] hover:bg-white transition-colors"
+              <div className="text-xs text-neutral-400 space-y-3 mb-5 break-words">
+                {settings.australiaPhone && <p>Australia: <a href={`tel:+61${settings.australiaPhone.replace(/^0/, "")}`} className="hover:text-[#FF5500]">{settings.australiaPhone}</a></p>}
+                {settings.contactEmail && <p><a href={`mailto:${settings.contactEmail}`} className="hover:text-[#FF5500]">{settings.contactEmail}</a></p>}
+                {settings.socialName && <p>Facebook / TikTok: {settings.socialName}</p>}
+              </div>
+              <WhatsAppLink
+                className="inline-block px-6 py-3 bg-[#FF5500] text-black font-mono text-xs font-bold uppercase tracking-[0.2em] hover:bg-white transition-colors"
               >
-                <RollText>[ Book A Vehicle ]</RollText>
-              </button>
+                <RollText>[ Book on WhatsApp ]</RollText>
+              </WhatsAppLink>
             </div>
           </div>
 
+          <a href="/admin" className="inline-block mb-6 text-xs text-neutral-500 hover:text-[#FF5500] transition-colors">Admin sign in</a>
           <div className="border-t border-white/10 pt-6 flex flex-col sm:flex-row items-center justify-between gap-4 font-mono text-[10px] uppercase tracking-[0.2em] text-neutral-500">
             <span>
-              © {new Date().getFullYear()} FLEXI RENTAL (PVT) LTD — COLOMBO, SRI
-              LANKA. ALL RIGHTS RESERVED.
+              © {new Date().getFullYear()} {settings.companyName}. ALL RIGHTS RESERVED.
             </span>
             <span className="text-[#FF5500]">
-              SELF-DRIVE ✦ AIRPORT PICKUP ✦ WITH DRIVER
+              AIRPORT DELIVERY &amp; RETURN ✦ 24/7 SUPPORT
             </span>
           </div>
         </div>

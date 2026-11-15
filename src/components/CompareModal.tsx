@@ -1,16 +1,17 @@
 "use client";
 
+import OptimizedImage from "@/components/OptimizedImage";
 import React from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Trash2, X } from "lucide-react";
-import { Vehicle } from "@/data/fleetData";
+import { formatDailyRate, Vehicle } from "@/data/fleetData";
+import WhatsAppLink from "./WhatsAppLink";
 
 interface CompareModalProps {
   isOpen: boolean;
   onClose: () => void;
   vehicles: Vehicle[];
   onRemoveVehicle: (id: string) => void;
-  onSelectForBooking: (vehicle: Vehicle) => void;
 }
 
 export default function CompareModal({
@@ -18,7 +19,6 @@ export default function CompareModal({
   onClose,
   vehicles,
   onRemoveVehicle,
-  onSelectForBooking,
 }: CompareModalProps) {
   return (
     <AnimatePresence>
@@ -49,6 +49,7 @@ export default function CompareModal({
               </div>
               <button
                 onClick={onClose}
+                aria-label="Close vehicle comparison"
                 className="p-3 bg-white/5 hover:bg-white/10 text-neutral-300"
               >
                 <X className="w-5 h-5" />
@@ -76,10 +77,11 @@ export default function CompareModal({
                   >
                     <div>
                       <div className="relative h-44">
-                        <img
+                        <OptimizedImage
                           src={car.image}
+                          sizes="(min-width: 768px) 320px, 100vw"
                           alt={car.name}
-                          className="w-full h-full object-cover"
+                          className={`w-full h-full ${car.imageFit === "contain" ? "object-contain" : "object-cover"}`}
                         />
                         <button
                           onClick={() => onRemoveVehicle(car.id)}
@@ -104,7 +106,7 @@ export default function CompareModal({
                           <div className="flex justify-between">
                             <span className="text-neutral-500">Daily Rate</span>
                             <span className="text-[#FF5500] font-bold tabular-nums">
-                              Rs. {car.pricePerDay.toLocaleString()}/d
+                              {formatDailyRate(car.pricePerDay)}
                             </span>
                           </div>
                           <div className="flex justify-between">
@@ -116,7 +118,7 @@ export default function CompareModal({
                           <div className="flex justify-between">
                             <span className="text-neutral-500">Seats</span>
                             <span className="text-white font-medium">
-                              {car.seats} Passengers
+                              {car.seats == null ? "On request" : `${car.seats} passengers`}
                             </span>
                           </div>
                           <div className="flex justify-between">
@@ -124,7 +126,7 @@ export default function CompareModal({
                             <span className="text-white">{car.luggage}</span>
                           </div>
                           <div className="flex justify-between">
-                            <span className="text-neutral-500">Engine</span>
+                            <span className="text-neutral-500">Engine / Type</span>
                             <span className="text-white">{car.engineOrType}</span>
                           </div>
                         </div>
@@ -132,15 +134,14 @@ export default function CompareModal({
                     </div>
 
                     <div className="p-6 pt-0">
-                      <button
-                        onClick={() => {
-                          onClose();
-                          onSelectForBooking(car);
-                        }}
-                        className="w-full py-3.5 bg-[#FF5500] hover:bg-white text-black font-mono font-bold text-xs uppercase tracking-wider transition-colors"
+                      <WhatsAppLink
+                        vehicle={car}
+                        onClick={onClose}
+                        aria-label={`Book ${car.name} on WhatsApp`}
+                        className="block text-center w-full py-3.5 bg-[#FF5500] hover:bg-white text-black font-mono font-bold text-xs uppercase tracking-wider transition-colors"
                       >
-                        [ Book {car.name} ]
-                      </button>
+                        {car.status === "coming-soon" ? "[ Ask about launch ]" : "[ Book on WhatsApp ]"}
+                      </WhatsAppLink>
                     </div>
                   </div>
                 ))}

@@ -3,27 +3,28 @@
 import React, { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { RollText, FourPointStar } from "./AnimatedText";
+import WhatsAppLink from "./WhatsAppLink";
+import { useSiteContent } from "./SiteContentProvider";
 
 interface NavbarProps {
   compareCount: number;
   onOpenCompare: () => void;
-  onOpenBooking: () => void;
 }
 
 export default function Navbar({
   compareCount,
   onOpenCompare,
-  onOpenBooking,
 }: NavbarProps) {
+  const { settings } = useSiteContent();
   const [menuOpen, setMenuOpen] = useState(false);
 
   const navLinks = [
     { label: "Home", href: "#hero" },
-    { label: "Routes", href: "#island-routes" },
+    { label: "Deals", href: "#deals" },
     { label: "About", href: "#about" },
     { label: "Our Cars", href: "#fleet-showroom" },
     { label: "Customers", href: "#customer-moments" },
-    { label: "Locations", href: "#global-hubs" },
+    { label: "Airport", href: "#airport-service" },
   ];
 
   return (
@@ -37,12 +38,12 @@ export default function Navbar({
           >
             <FourPointStar className="w-4 h-4 text-[#FF5500] group-hover:rotate-90 transition-transform duration-500" />
             <span className="font-display font-extrabold text-lg tracking-tight uppercase">
-              FLEXI <span className="text-[#FF5500]">RENTAL</span>
+              {settings.companyName.split(" ")[0]} <span className="text-[#FF5500]">{settings.companyName.split(" ").slice(1).join(" ")}</span>
             </span>
           </a>
 
           {/* Center Rolling Links */}
-          <nav className="hidden lg:flex absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 items-center gap-9 pointer-events-auto font-mono text-xs uppercase tracking-[0.18em]">
+          <nav className="hidden xl:flex items-center gap-5 2xl:gap-9 pointer-events-auto font-mono text-xs uppercase tracking-[0.18em]">
             {navLinks.map((link) => (
               <a key={link.href} href={link.href} className="py-1">
                 <RollText>{link.label}</RollText>
@@ -61,12 +62,11 @@ export default function Navbar({
               </button>
             )}
 
-            <button
-              onClick={onOpenBooking}
+            <WhatsAppLink
               className="hidden sm:inline-flex items-center gap-2 px-5 py-2.5 border border-[#FF5500] bg-[#FF5500] text-black font-bold hover:bg-white hover:border-white transition-colors"
             >
-              <span>Book A Car</span>
-            </button>
+              <span>WhatsApp</span>
+            </WhatsAppLink>
 
             <button
               onClick={() => setMenuOpen(!menuOpen)}
@@ -134,26 +134,23 @@ export default function Navbar({
                     (Island-Wide Service)
                   </div>
                   <p className="text-neutral-400 text-sm leading-relaxed">
-                    24/7 Katunayake Airport pickup, Colombo doorstep delivery,
-                    and self-drive or with-driver options across Sri Lanka.
+                    Airport delivery and airport returns, clean vehicles, great
+                    deals, and customer support available 24/7.
                   </p>
                 </div>
 
-                <button
-                  onClick={() => {
-                    setMenuOpen(false);
-                    onOpenBooking();
-                  }}
-                  className="w-full py-4 bg-[#FF5500] hover:bg-white text-black font-mono text-xs font-bold uppercase tracking-[0.2em] transition-colors"
+                <WhatsAppLink
+                  onClick={() => setMenuOpen(false)}
+                  className="block text-center w-full py-4 bg-[#FF5500] hover:bg-white text-black font-mono text-xs font-bold uppercase tracking-[0.2em] transition-colors"
                 >
-                  [ Book A Vehicle ]
-                </button>
+                  [ Book on WhatsApp ]
+                </WhatsAppLink>
               </div>
             </div>
 
             <div className="max-w-7xl w-full mx-auto flex items-center justify-between text-[11px] font-mono uppercase tracking-[0.2em] text-neutral-500 border-t border-white/10 pt-6">
               <span>Flexi Rental Sri Lanka &apos;26</span>
-              <span>Colombo • BIA Airport • Kandy • Galle • Negombo • Ella</span>
+              <span>Airport delivery &amp; return • 24/7 customer support</span>
             </div>
           </motion.div>
         )}

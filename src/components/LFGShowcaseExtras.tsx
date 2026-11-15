@@ -1,5 +1,6 @@
 "use client";
 
+import OptimizedImage from "@/components/OptimizedImage";
 import React, { useRef, useState } from "react";
 import {
   motion,
@@ -9,10 +10,13 @@ import {
   useSpring,
   useVelocity,
   useAnimationFrame,
+  useInView,
   useMotionValue,
 } from "framer-motion";
 import { ArrowUpRight, Plus } from "lucide-react";
-import { FLEET_VEHICLES, Vehicle } from "@/data/fleetData";
+import { formatDailyRate } from "@/data/fleetData";
+import WhatsAppLink from "./WhatsAppLink";
+import { useSiteContent } from "./SiteContentProvider";
 import {
   ScrambleText,
   RollingHeading,
@@ -20,142 +24,210 @@ import {
   FourPointStar,
 } from "./AnimatedText";
 
-interface LFGShowcaseExtrasProps {
-  onSelectVehicleForBooking: (vehicle: Vehicle, hubCity: string) => void;
-}
-
-const MANIFESTO_TOKENS: Array<{
-  text: string;
-  highlight?: boolean;
-  badge?: string;
-}> = [
-  { text: "Renting" },
-  { text: "a" },
-  { text: "car" },
-  { text: "in" },
-  { text: "Sri", highlight: true },
-  { text: "Lanka", highlight: true, badge: "ISLAND-WIDE" },
-  { text: "should" },
-  { text: "never" },
-  { text: "feel" },
-  { text: "complicated." },
-  { text: "No" },
-  { text: "surprise" },
-  { text: "broker" },
-  { text: "fees," },
-  { text: "no" },
-  { text: "worn-out" },
-  { text: "tires," },
-  { text: "and" },
-  { text: "no" },
-  { text: "waiting" },
-  { text: "hours" },
-  { text: "at" },
-  { text: "the" },
-  { text: "airport.", badge: "15M BIA PICKUP" },
-  { text: "Just" },
-  { text: "clean," },
-  { text: "fuel-saving", highlight: true },
-  { text: "hybrids,", highlight: true },
-  { text: "reliable" },
-  { text: "SUVs," },
-  { text: "and" },
-  { text: "spacious" },
-  { text: "vans" },
-  { text: "backed" },
-  { text: "by" },
-  { text: "honest", highlight: true },
-  { text: "LKR", highlight: true },
-  { text: "rates", highlight: true, badge: "FROM RS. 8,500/D" },
-  { text: "and" },
-  { text: "24/7" },
-  { text: "support." },
+const MANIFESTO_TOKENS: Array<{ text: string; highlight?: boolean; badge?: string }> = [
+  {
+    "text": "Make"
+  },
+  {
+    "text": "your"
+  },
+  {
+    "text": "ride"
+  },
+  {
+    "text": "better"
+  },
+  {
+    "text": "with"
+  },
+  {
+    "text": "Flexi",
+    "highlight": true
+  },
+  {
+    "text": "Rental.",
+    "highlight": true
+  },
+  {
+    "text": "Clean,"
+  },
+  {
+    "text": "comfortable"
+  },
+  {
+    "text": "cars,"
+  },
+  {
+    "text": "hybrids,"
+  },
+  {
+    "text": "SUVs,"
+  },
+  {
+    "text": "and"
+  },
+  {
+    "text": "vans"
+  },
+  {
+    "text": "for"
+  },
+  {
+    "text": "short"
+  },
+  {
+    "text": "and"
+  },
+  {
+    "text": "long"
+  },
+  {
+    "text": "stays"
+  },
+  {
+    "text": "in"
+  },
+  {
+    "text": "Sri"
+  },
+  {
+    "text": "Lanka."
+  },
+  {
+    "text": "Airport"
+  },
+  {
+    "text": "pickup"
+  },
+  {
+    "text": "and"
+  },
+  {
+    "text": "return,"
+  },
+  {
+    "text": "luxury"
+  },
+  {
+    "text": "wedding",
+    "highlight": true
+  },
+  {
+    "text": "cars,"
+  },
+  {
+    "text": "and"
+  },
+  {
+    "text": "customer"
+  },
+  {
+    "text": "support"
+  },
+  {
+    "text": "available"
+  },
+  {
+    "text": "24/7.",
+    "highlight": true
+  },
+  {
+    "text": "Choose"
+  },
+  {
+    "text": "your"
+  },
+  {
+    "text": "vehicle"
+  },
+  {
+    "text": "and"
+  },
+  {
+    "text": "ask"
+  },
+  {
+    "text": "our"
+  },
+  {
+    "text": "team"
+  },
+  {
+    "text": "for"
+  },
+  {
+    "text": "a"
+  },
+  {
+    "text": "quote.",
+    "highlight": true
+  }
 ];
 
 const TRIP_PAIRINGS = [
   {
-    index: "01",
-    tripName: "Airport Arrival & Colombo Stay",
-    carName: "Toyota Axio Hybrid WxB",
-    rate: "Rs. 13,500 / day",
-    specs: "20 km/L • 5 Seats • 3 Large Bags",
-    hub: "Katunayake Airport",
-    vehicle: FLEET_VEHICLES[1],
-    image:
-      "https://images.unsplash.com/photo-1621007947382-bb3c3994e3fb?auto=format&fit=crop&w=1000&q=85",
+    "index": "01",
+    "tripName": "Airport pickup & return",
+    "vehicleId": "toyota-axio",
+    "hub": "Airport"
   },
   {
-    index: "02",
-    tripName: "Colombo Daily Commute & Errands",
-    carName: "Suzuki Wagon R FX Hybrid",
-    rate: "Rs. 8,500 / day",
-    specs: "22 km/L • 4 Seats • Easy City Parking",
-    hub: "Colombo",
-    vehicle: FLEET_VEHICLES[0],
-    image:
-      "https://images.unsplash.com/photo-1549317661-bd32c8ce0db2?auto=format&fit=crop&w=1000&q=85",
+    "index": "02",
+    "tripName": "Everyday compact rentals",
+    "vehicleId": "suzuki-wagon-r",
+    "hub": "By arrangement"
   },
   {
-    index: "03",
-    tripName: "Kandy, Nuwara Eliya & Ella Hill Tour",
-    carName: "Toyota Raize Z Turbo SUV",
-    rate: "Rs. 15,500 / day",
-    specs: "16 km/L • Turbo • High Clearance",
-    hub: "Kandy",
-    vehicle: FLEET_VEHICLES[2],
-    image:
-      "https://images.unsplash.com/photo-1533473359331-0135ef1b58bf?auto=format&fit=crop&w=1000&q=85",
+    "index": "03",
+    "tripName": "SUVs for your getaway",
+    "vehicleId": "honda-vezel",
+    "hub": "By arrangement"
   },
   {
-    index: "04",
-    tripName: "Galle Fort, Unawatuna & Mirissa Coast",
-    carName: "Honda Vezel RS Sensing",
-    rate: "Rs. 16,500 / day",
-    specs: "18 km/L • Cruise Control • 5 Seats",
-    hub: "Galle",
-    vehicle: FLEET_VEHICLES[3],
-    image:
-      "https://images.unsplash.com/photo-1568844293986-8d0400bd4745?auto=format&fit=crop&w=1000&q=85",
+    "index": "04",
+    "tripName": "Hybrid rental options",
+    "vehicleId": "toyota-prius",
+    "hub": "By arrangement"
   },
   {
-    index: "05",
-    tripName: "Extended Family & Group Island Tour",
-    carName: "Toyota KDH High-Roof Van",
-    rate: "Rs. 22,000 / day",
-    specs: "9–12 Seats • Dual A/C • With/Without Driver",
-    hub: "Colombo",
-    vehicle: FLEET_VEHICLES[5],
-    image:
-      "https://images.unsplash.com/photo-1519641471654-76ce0107ad1b?auto=format&fit=crop&w=1000&q=85",
-  },
+    "index": "05",
+    "tripName": "Van & group enquiries",
+    "vehicleId": "nissan-nv200",
+    "hub": "By arrangement"
+  }
 ];
 
 const FAQ_ITEMS = [
   {
-    num: "01",
-    q: "What documents do I need to rent a self-drive car in Sri Lanka?",
-    a: "For Sri Lankan residents: a valid Sri Lankan Driving License, NIC or Passport, and a recent utility bill. For international visitors: your passport, home country driving license, and an International Driving Permit (IDP). We can also arrange your temporary Sri Lankan AAC driving endorsement ahead of arrival so you can drive legally from the moment you land.",
+    "num": "01",
+    "q": "What information should I send when enquiring?",
+    "a": "Send your rental dates, preferred vehicle, pickup and return arrangements, and any special requests. Our team will confirm availability, the required documents, and rental terms."
   },
   {
-    num: "02",
-    q: "How does 24/7 Katunayake Airport (BIA) pickup and drop-off work?",
-    a: "Simply share your flight number when booking. Our staff tracks your flight in real time and waits at the Katunayake Arrivals exit with your vehicle inspected, cooled, and fueled. Handover takes less than 10 minutes, even for late-night or early-morning flights.",
+    "num": "02",
+    "q": "Can I arrange airport pickup and return?",
+    "a": "Yes. We arrange airport pickup and return. Share your flight details and dates on WhatsApp to agree the handover arrangements."
   },
   {
-    num: "03",
-    q: "Can I rent a car or KDH van with an experienced local driver?",
-    a: "Yes! Every vehicle in our fleet is available for either self-drive or chauffeur-driven rental. Our English-speaking drivers know all routes across Colombo, Sigiriya, Kandy, Ella, Yala, and the Southern Coast.",
+    "num": "03",
+    "q": "Do you offer wedding cars?",
+    "a": "Yes. We offer luxury wedding car rentals. Send your wedding date, locations, and preferred car to ask about the available packages."
   },
   {
-    num: "04",
-    q: "Are there any hidden charges, and how does the refundable deposit work?",
-    a: "Never any hidden fees. Your daily rate, mileage allowance (100 km/day, 200 km/day, or Unlimited), and any selected extras are shown upfront in LKR. The refundable security deposit is returned in full upon vehicle return.",
+    "num": "04",
+    "q": "How much will my rental cost?",
+    "a": "Rates, deposits, mileage allowances, insurance coverage, and any additional charges are confirmed by our team for your dates and chosen vehicle. Request a full quote on WhatsApp."
   },
   {
-    num: "05",
-    q: "What happens if I have a flat tire or need assistance outstation?",
-    a: "Every rental includes 24/7 island-wide roadside assistance. Whether you are in Colombo, Kandy, Nuwara Eliya, Ella, or Galle, our support team and partner garages can assist you immediately or provide a replacement vehicle if needed.",
+    "num": "05",
+    "q": "Can I rent for a short or long stay?",
+    "a": "Yes. We offer short- and long-term rentals. Let our team know how long you need the vehicle and ask for a quote."
   },
+  {
+    "num": "06",
+    "q": "Is support available during my rental?",
+    "a": "Our customer support team is available 24/7. Contact the team on WhatsApp whenever you need assistance."
+  }
 ];
 
 function ManifestoWord({
@@ -197,6 +269,8 @@ function ManifestoWord({
 }
 
 function VelocityDualMarquee() {
+  const marqueeRef = useRef<HTMLDivElement>(null);
+  const inView = useInView(marqueeRef, { margin: "100px 0px" });
   const { scrollY } = useScroll();
   const scrollVelocity = useVelocity(scrollY);
   const smoothVelocity = useSpring(scrollVelocity, {
@@ -212,6 +286,7 @@ function VelocityDualMarquee() {
   const directionFactor = useRef<number>(1);
 
   useAnimationFrame((_, delta) => {
+    if (!inView || document.hidden) return;
     const vel = smoothVelocity.get();
     if (vel < -50) directionFactor.current = -1;
     else if (vel > 50) directionFactor.current = 1;
@@ -235,7 +310,7 @@ function VelocityDualMarquee() {
   const x2 = useTransform(baseX2, (v) => `${v}%`);
 
   return (
-    <div className="py-10 bg-[#050505] border-y border-white/10 overflow-hidden select-none space-y-4">
+    <div ref={marqueeRef} className="py-10 bg-[#050505] border-y border-white/10 overflow-hidden select-none space-y-4">
       {/* Row 1: Solid White & Orange Kinetic Strip */}
       <motion.div
         style={{ x: x1, skewX: skewRow1 }}
@@ -243,11 +318,11 @@ function VelocityDualMarquee() {
       >
         {Array.from({ length: 4 }).map((_, i) => (
           <span key={i} className="flex items-center gap-10">
-            <span className="text-white">SUZUKI WAGON R HYBRID</span>
+            <span className="text-white">SUZUKI WAGON R</span>
             <FourPointStar className="w-6 h-6 text-[#FF5500]" />
-            <span className="text-[#FF5500]">TOYOTA AXIO WXB</span>
+            <span className="text-[#FF5500]">TOYOTA AXIO</span>
             <FourPointStar className="w-6 h-6 text-white" />
-            <span className="text-white">TOYOTA RAIZE TURBO</span>
+            <span className="text-white">TOYOTA ALLION</span>
             <FourPointStar className="w-6 h-6 text-[#FF5500]" />
           </span>
         ))}
@@ -264,16 +339,16 @@ function VelocityDualMarquee() {
               className="text-transparent"
               style={{ WebkitTextStroke: "1.5px rgba(255,255,255,0.45)" }}
             >
-              HONDA VEZEL RS HYBRID
+              HONDA VEZEL RS
             </span>
             <FourPointStar className="w-6 h-6 text-[#FF5500]" />
-            <span className="text-white">TOYOTA PRIUS TOURING</span>
+            <span className="text-white">TOYOTA PRIUS</span>
             <FourPointStar className="w-6 h-6 text-[#FF5500]" />
             <span
               className="text-transparent"
               style={{ WebkitTextStroke: "1.5px #FF5500" }}
             >
-              TOYOTA KDH HIGH-ROOF VAN
+              NISSAN NV200
             </span>
             <FourPointStar className="w-6 h-6 text-white" />
           </span>
@@ -283,9 +358,11 @@ function VelocityDualMarquee() {
   );
 }
 
-export default function LFGShowcaseExtras({
-  onSelectVehicleForBooking,
-}: LFGShowcaseExtrasProps) {
+export default function LFGShowcaseExtras() {
+  const { fleet } = useSiteContent();
+  const tripPairings = TRIP_PAIRINGS.map(item => ({ ...item,
+    vehicle: fleet.find(vehicle => vehicle.id === item.vehicleId) ?? fleet[0],
+  }));
   // 1. Word-by-word illumination scroll ref
   const manifestoRef = useRef<HTMLDivElement>(null);
   const { scrollYProgress: manifestoProgress } = useScroll({
@@ -366,8 +443,8 @@ export default function LFGShowcaseExtras({
               />
             </div>
             <p className="text-neutral-400 text-base max-w-md font-light">
-              Hover over any trip below to preview the recommended car, fuel
-              economy, and daily LKR rate—click to book immediately.
+              Explore rental options for your journey. Tap to check availability
+              and request a quote on WhatsApp.
             </p>
           </div>
 
@@ -378,17 +455,20 @@ export default function LFGShowcaseExtras({
             onMouseLeave={() => setHoveredTripIdx(null)}
             className="relative divide-y divide-white/15 border-y border-white/15"
           >
-            {TRIP_PAIRINGS.map((item, idx) => {
+            {tripPairings.map((item, idx) => {
               const isHovered = hoveredTripIdx === idx;
               return (
-                <div
+                <WhatsAppLink
                   key={item.index}
+                  vehicle={item.vehicle}
+                  hub={item.hub}
+                  inquiry={`Trip: ${item.tripName}`}
                   onMouseEnter={() => setHoveredTripIdx(idx)}
-                  onClick={() =>
-                    onSelectVehicleForBooking(item.vehicle, item.hub)
-                  }
-                  data-cursor="BOOK"
-                  className="group relative cursor-pointer py-7 sm:py-9 px-4 sm:px-8 transition-colors duration-300 overflow-hidden"
+                  onFocus={() => setHoveredTripIdx(idx)}
+                  onBlur={() => setHoveredTripIdx(null)}
+                  aria-label={`Plan ${item.tripName} on WhatsApp`}
+                  data-cursor="CHAT"
+                  className="group block relative cursor-pointer py-7 sm:py-9 px-4 sm:px-8 transition-colors duration-300 overflow-hidden"
                 >
                   {/* Animated Orange Curtain Fill on Hover */}
                   <motion.div
@@ -429,14 +509,14 @@ export default function LFGShowcaseExtras({
                           isHovered ? "text-black" : "text-white"
                         }`}
                       >
-                        {item.carName}
+                        {item.vehicle.brand} {item.vehicle.name}
                       </span>
                       <span
                         className={`font-mono text-[11px] uppercase tracking-wider ${
                           isHovered ? "text-black/75" : "text-neutral-400"
                         }`}
                       >
-                        {item.specs}
+                        {item.vehicle.category} • Check availability on WhatsApp
                       </span>
                     </div>
 
@@ -448,7 +528,7 @@ export default function LFGShowcaseExtras({
                             : "bg-white/[0.04] text-[#FF5500] border-white/15"
                         }`}
                       >
-                        {item.rate}
+                        {formatDailyRate(item.vehicle.pricePerDay)}
                       </span>
                       <ArrowUpRight
                         className={`w-5 h-5 transition-transform duration-300 ${
@@ -459,7 +539,7 @@ export default function LFGShowcaseExtras({
                       />
                     </div>
                   </div>
-                </div>
+                </WhatsAppLink>
               );
             })}
 
@@ -477,17 +557,17 @@ export default function LFGShowcaseExtras({
                   }}
                   className="pointer-events-none hidden lg:block absolute z-30 w-80 aspect-[16/10] -translate-x-1/2 -translate-y-1/2 overflow-hidden bg-black border-2 border-white shadow-[0_25px_60px_rgba(0,0,0,0.85)]"
                 >
-                  <img
-                    src={TRIP_PAIRINGS[hoveredTripIdx].image}
-                    alt={TRIP_PAIRINGS[hoveredTripIdx].carName}
+                  <OptimizedImage
+                    src={tripPairings[hoveredTripIdx].vehicle.image} sizes="280px"
+                    alt={tripPairings[hoveredTripIdx].vehicle.name}
                     className="w-full h-full object-cover"
                   />
                   <div className="absolute bottom-0 inset-x-0 p-3 bg-gradient-to-t from-black via-black/80 to-transparent flex items-center justify-between">
                     <span className="font-mono text-[10px] uppercase tracking-[0.2em] text-white font-bold">
-                      {TRIP_PAIRINGS[hoveredTripIdx].carName}
+                      {tripPairings[hoveredTripIdx].vehicle.name}
                     </span>
                     <span className="font-mono text-[10px] font-bold text-[#FF5500]">
-                      {TRIP_PAIRINGS[hoveredTripIdx].hub}
+                      {tripPairings[hoveredTripIdx].hub}
                     </span>
                   </div>
                 </motion.div>
@@ -513,18 +593,15 @@ export default function LFGShowcaseExtras({
               className="font-display font-black text-4xl sm:text-5xl tracking-tight leading-[1.04]"
             />
             <p className="text-neutral-400 text-base font-light leading-relaxed">
-              Clear answers on documents, foreign driving permits, airport
-              handovers, and refundable deposits in Sri Lanka.
+              Ask about airport handovers, wedding cars, rental options,
+              and the next steps for your booking.
             </p>
             <div className="pt-2">
-              <button
-                onClick={() =>
-                  onSelectVehicleForBooking(FLEET_VEHICLES[1], "Colombo")
-                }
-                className="px-7 py-4 bg-[#FF5500] hover:bg-white text-black font-mono text-xs font-bold uppercase tracking-[0.2em] transition-colors"
+              <WhatsAppLink
+                className="inline-block px-7 py-4 bg-[#FF5500] hover:bg-white text-black font-mono text-xs font-bold uppercase tracking-[0.2em] transition-colors"
               >
-                <RollText>[ Book Your Vehicle Now ]</RollText>
-              </button>
+                <RollText>[ Chat on WhatsApp ]</RollText>
+              </WhatsAppLink>
             </div>
           </div>
 

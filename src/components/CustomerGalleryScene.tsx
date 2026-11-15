@@ -92,12 +92,15 @@ function FilmFrameMesh({ photo, cardIndex, progress, totalCards, onSelect }: {
           vec2 sampleUv = gl_FrontFacing ? vUv : vec2(1.0 - vUv.x, vUv.y);
           vec4 texColor = texture2D(uMap, sampleUv);
           // Subtle atmospheric dimming when deep in the back row (vDepth < 0)
-          float depthShade = clamp(0.75 + (vDepth + 5.0) * 0.035, 0.68, 1.0);
+          float depthShade = clamp(1.0 + min(vDepth, 0.0) * 0.012, 0.92, 1.0);
           gl_FragColor = vec4(texColor.rgb * depthShade, texColor.a * uOpacity);
+          // The sRGB poster is sampled in linear space; encode it for display.
+          #include <colorspace_fragment>
         }
       `,
       side: THREE.DoubleSide,
       transparent: true,
+      toneMapped: false,
     });
   }, [texture]);
 

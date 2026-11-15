@@ -52,7 +52,7 @@ export function projectGalleryRibbon(progress: number, count: number, width: num
           const u = (index % row) / FILM_SEGMENTS;
           return { x: winding < 0 ? u : 1 - u, y: index < row ? 0 : 1 };
         }) as GalleryTriangle["uv"];
-        triangles.push({ points: projected, uv, depth, shade: Math.max(0.68, Math.min(1, 0.75 + (depth + 5) * 0.035)), photo, half });
+        triangles.push({ points: projected, uv, depth, shade: Math.max(0.92, Math.min(1, 1 + Math.min(depth, 0) * 0.012)), photo, half });
       }
     }
   }

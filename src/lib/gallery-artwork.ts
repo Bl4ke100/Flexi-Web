@@ -33,12 +33,13 @@ export function paintGalleryPoster(canvas: HTMLCanvasElement, photo: CustomerPho
         ctx.drawImage(img, offsetX, offsetY, drawW, drawH);
       }
 
-      // Top & bottom dark editorial gradients
+      // Keep faces and vehicles clear; reserve the darker area for captions.
       const grad = ctx.createLinearGradient(0, 0, 0, H);
-      grad.addColorStop(0, "rgba(0,0,0,0.55)");
-      grad.addColorStop(0.35, "rgba(0,0,0,0.08)");
-      grad.addColorStop(0.65, "rgba(0,0,0,0.35)");
-      grad.addColorStop(1, "rgba(0,0,0,0.92)");
+      grad.addColorStop(0, "rgba(0,0,0,0.24)");
+      grad.addColorStop(0.16, "rgba(0,0,0,0)");
+      grad.addColorStop(0.65, "rgba(0,0,0,0)");
+      grad.addColorStop(0.82, "rgba(0,0,0,0.48)");
+      grad.addColorStop(1, "rgba(0,0,0,0.88)");
       ctx.fillStyle = grad;
       ctx.fillRect(0, 0, W, H);
 
@@ -56,13 +57,18 @@ export function paintGalleryPoster(canvas: HTMLCanvasElement, photo: CustomerPho
       ctx.fillRect(0, 0, W, H);
 
       // Top Center Emblem: FLEXI RENTAL
-      ctx.textAlign = "center";
+      ctx.textAlign = "left";
       ctx.font = "900 22px sans-serif";
+      const flexiWidth = ctx.measureText("FLEXI").width;
+      const rentalWidth = ctx.measureText("RENTAL").width;
+      const logoGap = 8;
+      const logoLeft = (W - flexiWidth - logoGap - rentalWidth) * 0.5;
       ctx.fillStyle = "#FFFFFF";
-      ctx.fillText("FLEXI", W * 0.5 - 38, 46);
+      ctx.fillText("FLEXI", logoLeft, 46);
       ctx.fillStyle = "#FF5500";
-      ctx.fillText("RENTAL", W * 0.5 + 36, 46);
+      ctx.fillText("RENTAL", logoLeft + flexiWidth + logoGap, 46);
 
+      ctx.textAlign = "center";
       ctx.font = "600 11px monospace";
       ctx.fillStyle = "rgba(255,255,255,0.72)";
       ctx.fillText("SRI LANKA", W * 0.5, 64);
@@ -105,7 +111,7 @@ export function createGalleryHeadline() {
       ctx.clearRect(0, 0, canvas.width, canvas.height);
 
       // Top Line: "THE DRIVES WE" (Right-shifted like "THE NIGHTS WE" in LFG screenshot)
-      ctx.font = "900 225px sans-serif";
+      ctx.font = "900 190px sans-serif";
       ctx.fillStyle = "#FFFFFF";
       ctx.textAlign = "right";
       ctx.fillText("THE DRIVES WE", 2320, 255);
@@ -122,7 +128,7 @@ export function createGalleryHeadline() {
       );
 
       // Bottom Line: "MADE MEMORIES" (Left-shifted like "MADE HISTORY" in LFG screenshot)
-      ctx.font = "900 225px sans-serif";
+      ctx.font = "900 190px sans-serif";
       ctx.textAlign = "left";
       ctx.fillStyle = "#FFFFFF";
       ctx.fillText("MADE ", 70, 620);

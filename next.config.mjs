@@ -1,7 +1,8 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  // Keep a running development server from overwriting production build files.
-  distDir: process.env.NODE_ENV === 'production' ? '.next-production' : '.next',
+  // Keep local development separate while using Next's standard production
+  // output directory, which Vercel expects when packaging routes and functions.
+  distDir: process.env.NODE_ENV === 'development' ? '.next-dev' : '.next',
   transpilePackages: ['three'],
   async headers() {
     return [{ source: '/:path*', headers: [

@@ -9,6 +9,7 @@
 
 # next.js
 /.next/
+/.next-dev/
 /.next-production/
 /out/
 
@@ -33,3 +34,5 @@ yarn-error.log*
 
 # typescript
 *.tsbuildinfo
+.env*
+!.env.example

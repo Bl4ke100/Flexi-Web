@@ -56,6 +56,10 @@ export function paintGalleryPoster(canvas: HTMLCanvasElement, photo: CustomerPho
       ctx.fillStyle = botGlow;
       ctx.fillRect(0, 0, W, H);
 
+      // Temper the photo without reducing the contrast of the overlaid labels.
+      ctx.fillStyle = "rgba(0,0,0,0.1)";
+      ctx.fillRect(0, 0, W, H);
+
       // Top Center Emblem: FLEXI RENTAL
       ctx.textAlign = "left";
       ctx.font = "900 22px sans-serif";
@@ -110,11 +114,11 @@ export function createGalleryHeadline() {
     if (ctx) {
       ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-      // Top Line: "THE DRIVES WE" (Right-shifted like "THE NIGHTS WE" in LFG screenshot)
+      // Center both headline lines independently on the shared scene plane.
       ctx.font = "900 190px sans-serif";
       ctx.fillStyle = "#FFFFFF";
-      ctx.textAlign = "right";
-      ctx.fillText("THE DRIVES WE", 2320, 255);
+      ctx.textAlign = "center";
+      ctx.fillText("THE DRIVES WE", canvas.width / 2, 255);
 
       // Middle Tracked Subtitle Line
       ctx.font = "700 26px monospace";
@@ -127,15 +131,18 @@ export function createGalleryHeadline() {
         365
       );
 
-      // Bottom Line: "MADE MEMORIES" (Left-shifted like "MADE HISTORY" in LFG screenshot)
+      // Center the complete two-color phrase, retaining a natural word space.
       ctx.font = "900 190px sans-serif";
+      ctx.letterSpacing = "0px";
       ctx.textAlign = "left";
-      ctx.fillStyle = "#FFFFFF";
-      ctx.fillText("MADE ", 70, 620);
-
       const madeWidth = ctx.measureText("MADE ").width;
+      const memoriesWidth = ctx.measureText("MEMORIES").width;
+      const lineLeft = (canvas.width - madeWidth - memoriesWidth) / 2;
+      ctx.fillStyle = "#FFFFFF";
+      ctx.fillText("MADE ", lineLeft, 620);
+
       ctx.fillStyle = "#FF5500";
-      ctx.fillText("MEMORIES", 70 + madeWidth, 620);
+      ctx.fillText("MEMORIES", lineLeft + madeWidth, 620);
     }
 
 

@@ -59,27 +59,6 @@ export default function CustomerWormGallery() {
       {/* Sticky Full-Screen Stage */}
       <div className="sticky top-0 h-screen w-full overflow-hidden flex flex-col justify-between">
         {/* ===================================================================
-            THIN ORBITAL HAIRLINE ARCS IN BACKGROUND (EXACT LFG STYLE)
-        =================================================================== */}
-        <svg
-          viewBox="0 0 1440 900"
-          fill="none"
-          preserveAspectRatio="none"
-          className="pointer-events-none absolute inset-0 w-full h-full z-[1]"
-        >
-          <path
-            d="M 130 115 C 85 80, 380 110, 1255 410"
-            stroke="rgba(255, 255, 255, 0.18)"
-            strokeWidth="1.1"
-          />
-          <path
-            d="M 205 390 C 65 435, 185 655, 1045 810"
-            stroke="rgba(255, 255, 255, 0.18)"
-            strokeWidth="1.1"
-          />
-        </svg>
-
-        {/* ===================================================================
             WEBGL / THREE.JS TRUE 3D BENDING HELICAL FILM TAPE + Z=0 HEADLINE
         =================================================================== */}
         <div

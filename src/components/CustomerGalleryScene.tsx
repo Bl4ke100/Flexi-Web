@@ -5,7 +5,7 @@ import * as THREE from "three";
 import { Canvas, useFrame, useThree } from "@react-three/fiber";
 import type { MotionValue } from "framer-motion";
 import type { CustomerPhoto } from "@/data/fleetData";
-import { FILM_CURVE_LENGTH, FILM_SEGMENTS, FILM_STEP, FILM_WIDTH, createRibbonScratch, deformFilmRibbon } from "@/lib/film-ribbon";
+import { FILM_SEGMENTS, createFilmRibbonLayout, createRibbonScratch, deformFilmRibbon } from "@/lib/film-ribbon";
 import { canvasImage } from "@/lib/responsive-image";
 import { paintGalleryPoster, createGalleryHeadline } from "@/lib/gallery-artwork";
 import { galleryHeadlineSize } from "@/lib/gallery-layout";
@@ -57,6 +57,8 @@ function FilmFrameMesh({ photo, cardIndex, progress, totalCards, onSelect }: {
   totalCards: number; onSelect: (photo: CustomerPhoto) => void;
 }) {
   const meshRef = useRef<THREE.Mesh>(null);
+  const size = useThree(state => state.size);
+  const layout = useMemo(() => createFilmRibbonLayout(size.width, size.height), [size.width, size.height]);
   const texture = useCustomerPosterTexture(photo);
   const geometry = useMemo(() => {
     const result = new THREE.PlaneGeometry(1, 1, FILM_SEGMENTS, 1);
@@ -107,24 +109,25 @@ function FilmFrameMesh({ photo, cardIndex, progress, totalCards, onSelect }: {
 
 
   const scratch = useMemo(createRibbonScratch, []);
-  const previous = useRef({ progress: NaN, count: 0 });
+  const previous = useRef({ progress: NaN, count: 0, layout });
   useEffect(() => () => { geometry.dispose(); material.dispose(); }, [geometry, material]);
 
   useFrame(() => {
     if (!meshRef.current) return;
     const value = progress.get();
-    if (value === previous.current.progress && totalCards === previous.current.count) return;
+    if (value === previous.current.progress && totalCards === previous.current.count && layout === previous.current.layout) return;
     previous.current.progress = value;
     previous.current.count = totalCards;
-    const halfWidth = FILM_WIDTH * 0.5;
+    previous.current.layout = layout;
+    const halfWidth = layout.width * 0.5;
     const start = -halfWidth;
-    const end = FILM_CURVE_LENGTH + halfWidth + (totalCards - 1) * FILM_STEP;
-    const center = start + Math.max(0, Math.min(1, value)) * (end - start) - cardIndex * FILM_STEP;
-    const visible = center + halfWidth > 0.05 && center - halfWidth < FILM_CURVE_LENGTH - 0.05;
+    const end = layout.length + halfWidth + (totalCards - 1) * layout.step;
+    const center = start + Math.max(0, Math.min(1, value)) * (end - start) - cardIndex * layout.step;
+    const visible = center + halfWidth > 0.05 && center - halfWidth < layout.length - 0.05;
     meshRef.current.visible = visible;
     if (!visible) return;
     const positions = geometry.attributes.position as THREE.BufferAttribute;
-    deformFilmRibbon(positions.array as Float32Array, center, scratch);
+    deformFilmRibbon(positions.array as Float32Array, center, scratch, layout);
     positions.needsUpdate = true;
     // The shader uses position/UV only; recomputing normals has no visual effect.
   });

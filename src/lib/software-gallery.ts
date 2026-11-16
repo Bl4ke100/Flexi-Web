@@ -1,4 +1,4 @@
-import { FILM_CURVE_LENGTH, FILM_SEGMENTS, FILM_STEP, FILM_WIDTH, createRibbonScratch, deformFilmRibbon } from "./film-ribbon";
+import { DESKTOP_FILM_LAYOUT, FILM_SEGMENTS, createFilmRibbonLayout, createRibbonScratch, deformFilmRibbon } from "./film-ribbon";
 import { galleryHeadlineSize } from "./gallery-layout";
 
 export type ScreenPoint = { x: number; y: number };
@@ -27,21 +27,27 @@ export function containsGalleryPoint(point: ScreenPoint, triangle: GalleryTriang
 }
 
 export function createSoftwareGalleryGeometry() {
-  return { positions: new Float32Array((FILM_SEGMENTS + 1) * 2 * 3), scratch: createRibbonScratch() };
+  return { positions: new Float32Array((FILM_SEGMENTS + 1) * 2 * 3), scratch: createRibbonScratch(), layout: DESKTOP_FILM_LAYOUT, width: 0, height: 0 };
 }
 
 // Project the same 48-column ribbon mesh through the original camera. Painter's
 // ordering puts rear photos behind the headline and front photos in front.
 export function projectGalleryRibbon(progress: number, count: number, width: number, height: number, geometry = createSoftwareGalleryGeometry()) {
   const triangles: GalleryTriangle[] = [];
+  if (geometry.width !== width || geometry.height !== height) {
+    geometry.layout = createFilmRibbonLayout(width, height);
+    geometry.width = width;
+    geometry.height = height;
+  }
+  const layout = geometry.layout;
   const row = FILM_SEGMENTS + 1;
-  const half = FILM_WIDTH / 2;
+  const half = layout.width / 2;
   const start = -half;
-  const end = FILM_CURVE_LENGTH + half + (count - 1) * FILM_STEP;
+  const end = layout.length + half + (count - 1) * layout.step;
   for (let photo = 0; photo < count; photo++) {
-    const center = start + Math.max(0, Math.min(1, progress)) * (end - start) - photo * FILM_STEP;
-    if (center + half <= 0.05 || center - half >= FILM_CURVE_LENGTH - 0.05) continue;
-    deformFilmRibbon(geometry.positions, center, geometry.scratch);
+    const center = start + Math.max(0, Math.min(1, progress)) * (end - start) - photo * layout.step;
+    if (center + half <= 0.05 || center - half >= layout.length - 0.05) continue;
+    deformFilmRibbon(geometry.positions, center, geometry.scratch, layout);
     const points = Array.from({ length: row * 2 }, (_, i) => projectGalleryPoint(geometry.positions[i * 3], geometry.positions[i * 3 + 1], geometry.positions[i * 3 + 2], width, height));
     for (let column = 0; column < FILM_SEGMENTS; column++) {
       for (const [half, indices] of [[column, column + row, column + 1], [column + row, column + row + 1, column + 1]].entries()) {

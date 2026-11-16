@@ -50,20 +50,23 @@ test("Software ribbon retains curvature, depth ordering, and complete entry/exit
 });
 
 test("Phone ribbons turn within the screen and use smaller cards; desktop geometry stays original", () => {
-  for (const [width, height] of [[320, 568], [390, 844], [600, 1184], [767, 1024], [700, 390]]) {
+  for (const [width, height] of [[320, 568], [390, 844], [600, 856], [600, 1184], [767, 1024], [700, 390]]) {
     const phone = ribbon.createFilmRibbonLayout(width, height);
     assert.ok(phone.width < ribbon.FILM_WIDTH);
     const positions = new Float32Array((ribbon.FILM_SEGMENTS + 1) * 2 * 3);
     const scratch = ribbon.createRibbonScratch();
     let furthestRight = 0;
+    let furthestLeft = width;
     for (let sample = 0; sample <= 120; sample++) {
       ribbon.deformFilmRibbon(positions, phone.length * sample / 120, scratch, phone);
       for (let index = 0; index < positions.length; index += 3) {
         const point = software.projectGalleryPoint(positions[index], positions[index + 1], positions[index + 2], width, height);
         furthestRight = Math.max(furthestRight, point.x);
+        furthestLeft = Math.min(furthestLeft, point.x);
       }
     }
     assert.ok(furthestRight < width * 0.9, "The entire bend must return to the front before reaching the right screen edge");
+    assert.ok(furthestLeft > width * 0.08, "Entry and exit cards must stay inside the left phone gutter throughout the path");
     const front = Math.max(...phone.curve.points.map(point => point.z));
     const top = software.projectGalleryPoint(0, phone.height / 2, front, width, height);
     const bottom = software.projectGalleryPoint(0, -phone.height / 2, front, width, height);

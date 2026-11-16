@@ -30,7 +30,6 @@ export function createFilmRibbonLayout(viewportWidth: number, viewportHeight: nu
   const height = width * FILM_HEIGHT / FILM_WIDTH;
   const depth = Math.min(1.8, cameraWidth * 0.4);
   // Turn back toward the viewer inside the phone's visible camera width.
-  // Only the entry and exit extend beyond the left edge, as the tape passes.
   const curve = new THREE.CatmullRomCurve3([
     new THREE.Vector3(-0.74 * cameraWidth, -0.85 * height, -depth),
     new THREE.Vector3(-0.42 * cameraWidth, -0.72 * height, -depth),
@@ -43,8 +42,12 @@ export function createFilmRibbonLayout(viewportWidth: number, viewportHeight: nu
     new THREE.Vector3(-0.44 * cameraWidth, 0.9 * height, 0.5 * depth),
     new THREE.Vector3(-0.74 * cameraWidth, 1.04 * height, 0.45 * depth),
   ], false, "centripetal", 0.5);
-  // Keep the two passes close together and clear of the phone's corner controls.
-  for (const point of curve.points) point.y = point.y * 0.65 - height * 0.08;
+  // Center and fit the complete path, including its entry and exit, inside the
+  // phone gutters. Keep the two passes clear of the corner controls.
+  for (const point of curve.points) {
+    point.x = (point.x + cameraWidth * 0.225) * 0.64;
+    point.y = point.y * 0.65 - height * 0.08;
+  }
   return { curve, length: curve.getLength(), width, height, step: width * (FILM_STEP / FILM_WIDTH) };
 }
 

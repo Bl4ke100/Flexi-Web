@@ -104,7 +104,7 @@ export default function FleetShowroom({
 
         <div
           id="fleet-results"
-          className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-x-6 gap-y-9"
+          className="grid grid-cols-2 lg:grid-cols-3 gap-x-3 sm:gap-x-6 gap-y-6 sm:gap-y-9"
         >
             {visibleVehicles.map((car, idx) => {
               const inCompare = compareList.some((c) => c.id === car.id);
@@ -114,16 +114,16 @@ export default function FleetShowroom({
                   initial={{ opacity: 0, y: 16 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ duration: 0.3, delay: (idx % 3) * 0.04 }}
-                  className="group min-w-0 flex flex-col justify-between border-b border-white/10 pb-6"
+                  className="group min-w-0 flex flex-col justify-between border-b border-white/10 pb-4 sm:pb-6"
                 >
                   <div>
                     {/* Poster Frame */}
                     <div
-                      className="relative aspect-square overflow-hidden bg-[#0D0D0D] border border-white/10 mb-5 cursor-pointer"
+                      className="relative aspect-square overflow-hidden bg-[#0D0D0D] border border-white/10 mb-3 sm:mb-5 cursor-pointer"
                     >
                       <OptimizedImage
                         src={car.image}
-                        sizes="(min-width: 1024px) 400px, (min-width: 640px) 50vw, 100vw"
+                        sizes="(min-width: 1024px) 400px, 50vw"
                         alt={car.name}
                         className={`w-full h-full ${car.imageFit === "contain" ? "object-contain" : "object-cover"} object-center transition-transform duration-1000 ease-out`}
                         loading="lazy"
@@ -137,17 +137,19 @@ export default function FleetShowroom({
                       />
 
                       {/* Top Tag & Compare Button */}
-                      <div className="absolute top-3 inset-x-3 flex items-center justify-between">
+                      <div className="absolute top-1.5 right-1.5 sm:top-3 sm:inset-x-3 flex items-center justify-between">
                         <span className="sr-only px-3.5 py-1.5 bg-black/75 backdrop-blur-md border border-white/15 font-mono text-[10px] uppercase tracking-[0.2em] text-[#FF5500]">
                           {car.badge}
                         </span>
 
                         <button
+                          aria-label={inCompare ? `Remove ${car.name} from comparison` : `Compare ${car.name}`}
+                          aria-pressed={inCompare}
                           onClick={(e) => {
                             e.stopPropagation();
                             onToggleCompare(car);
                           }}
-                          className={`min-h-11 px-3.5 py-1.5 backdrop-blur-md border font-mono text-[10px] uppercase tracking-[0.18em] flex items-center gap-1.5 transition-all ${
+                          className={`min-h-11 min-w-11 justify-center px-2 sm:px-3.5 py-1.5 backdrop-blur-md border font-mono text-[10px] uppercase tracking-[0.18em] flex items-center gap-1.5 transition-all ${
                             inCompare
                               ? "bg-[#FF5500] text-black border-[#FF5500] font-bold"
                               : "bg-black/75 text-white border-white/20 hover:border-[#FF5500]"
@@ -156,12 +158,12 @@ export default function FleetShowroom({
                           {inCompare ? (
                             <>
                               <Check className="w-3 h-3" />
-                              <span>Comparing</span>
+                              <span className="sr-only sm:not-sr-only">Comparing</span>
                             </>
                           ) : (
                             <>
                               <Plus className="w-3 h-3" />
-                              <span>Compare</span>
+                              <span className="sr-only sm:not-sr-only">Compare</span>
                             </>
                           )}
                         </button>
@@ -170,43 +172,44 @@ export default function FleetShowroom({
                     </div>
 
                     {/* Title & Rate */}
-                    <div className="space-y-3 mb-3">
+                    <div className="space-y-2 sm:space-y-3 mb-2 sm:mb-3">
                       <div>
-                        <div className="font-mono text-[10px] uppercase tracking-[0.15em] text-[#FF5500] mb-1">
+                        <div className="font-mono text-[8px] sm:text-[10px] uppercase tracking-wide sm:tracking-[0.15em] text-[#FF5500] mb-1">
                           {car.brand} • {car.category}
                         </div>
-                        <h3 className="font-display font-bold text-2xl text-white tracking-tight">
+                        <h3 className="font-display font-bold text-base sm:text-2xl text-white tracking-tight break-words">
                           {car.name}
                         </h3>
                       </div>
 
                       <div className="flex flex-wrap items-baseline gap-x-3 gap-y-1">
-                        <div className="font-display font-semibold text-lg text-white tabular-nums">
+                        <div className="font-display font-semibold text-sm sm:text-lg text-white tabular-nums">
                           {formatDailyRate(car.pricePerDay, "")}
                         </div>
-                        <div className="font-mono text-[9px] uppercase tracking-[0.12em] text-neutral-500">
+                        <div className="font-mono text-[8px] sm:text-[9px] uppercase tracking-wide sm:tracking-[0.12em] text-neutral-500">
                           {car.status === "coming-soon" ? "Coming soon" : car.pricePerDay == null ? "Confirm your dates" : "Per day"}
                         </div>
                       </div>
                     </div>
 
-                    <p className="text-neutral-400 text-sm font-light leading-relaxed mb-5">
+                    <p className="text-neutral-400 text-[11px] sm:text-sm font-light leading-relaxed mb-3 sm:mb-5 line-clamp-2 sm:line-clamp-none">
                       {car.tagline}
                     </p>
                   </div>
 
                   {/* Bracket CTAs */}
                   <div className="flex flex-wrap items-center justify-between gap-3">
-                    <span className="font-mono text-[9px] uppercase tracking-[0.12em] text-neutral-500">
+                    <span className="hidden sm:inline font-mono text-[9px] uppercase tracking-[0.12em] text-neutral-500">
                       {car.status === "coming-soon" ? "Coming soon for rent" : car.category}
                     </span>
 
                     <WhatsAppLink
                       vehicle={car}
                       aria-label={`${car.status === "coming-soon" ? "Ask about launch of" : "Book"} ${car.name} on WhatsApp`}
-                      className="shrink-0 px-4 py-2.5 bg-[#FF5500] hover:bg-white text-black font-mono text-[10px] font-bold uppercase tracking-[0.12em] transition-colors"
+                      className="w-full sm:w-auto min-h-11 flex items-center justify-center shrink-0 px-2 sm:px-4 py-2.5 bg-[#FF5500] hover:bg-white text-black font-mono text-[9px] sm:text-[10px] font-bold uppercase tracking-wide sm:tracking-[0.12em] transition-colors"
                     >
-                      <RollText>{car.status === "coming-soon" ? "[ Ask about launch ]" : "[ WhatsApp ]"}</RollText>
+                      <span className="sm:hidden">{car.status === "coming-soon" ? "[ Ask launch ]" : "[ WhatsApp ]"}</span>
+                      <span className="hidden sm:inline"><RollText>{car.status === "coming-soon" ? "[ Ask about launch ]" : "[ WhatsApp ]"}</RollText></span>
                     </WhatsAppLink>
                   </div>
                 </motion.article>

@@ -425,10 +425,10 @@ export default function ScrollytellingSection() {
               />
             </header>
 
-            {!pinned && <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+            {!pinned && <div className="grid grid-cols-2 gap-3 sm:gap-6">
               {DISCIPLINES.map(item => <article key={item.num} className="min-w-0 overflow-hidden border border-white/15 bg-[#0D0D0D]">
-                <div className="aspect-[4/3] overflow-hidden"><OptimizedImage src={item.image} sizes="(min-width: 640px) 50vw, 100vw" alt={item.title} className="h-full w-full object-cover" /></div>
-                <div className="p-5"><span className="font-mono text-xs text-[#FF5500]">SERVICE // {item.num}</span><h3 className="font-display font-bold text-2xl mt-3 mb-2">{item.title}</h3><p className="text-sm text-neutral-400 leading-relaxed">{item.desc}</p></div>
+                <div className="aspect-[4/3] overflow-hidden"><OptimizedImage src={item.image} sizes="50vw" alt={item.title} className="h-full w-full object-cover" /></div>
+                <div className="p-3 sm:p-5"><span className="font-mono text-[8px] sm:text-xs text-[#FF5500]">SERVICE // {item.num}</span><h3 className="font-display font-bold text-sm sm:text-2xl leading-tight mt-2 sm:mt-3 mb-2 break-words">{item.title}</h3><p className="text-[11px] sm:text-sm text-neutral-400 leading-relaxed">{item.desc}</p></div>
               </article>)}
             </div>}
             <div className={`${pinned ? "grid" : "hidden"} grid-cols-1 lg:grid-cols-12 gap-12 items-center`}>
